@@ -1,0 +1,17 @@
+﻿<a class="btn btn-info btn-sm pull-right" ng-click="controller.editRiskMap()">Edit Risk Map</a>
+<h3>{{ controller.currentRiskMap.name }}</h3>
+
+{{ controller.currentRisks.length }} risks
+<table class="table table-striped table-bordered table-hover ng-hide" ng-show="controller.currentRisks.length != 0">
+    <thead>
+        <tr><th>Theme</th><th>Risk</th><th>Category</th><th>Grouping</th></tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="risk in controller.currentRisks">
+            <td>{{ risk.theme }}</td>
+            <td>{{ risk.title }}</td>
+            <td>{{ risk.category }}</td>
+            <td>{{ risk.grouping }}</td>
+        </tr>
+    </tbody>
+</table>

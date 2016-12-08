@@ -1,0 +1,33 @@
+﻿<div class="ng-hide" ng-hide="controller.message != ''">
+    <p class="alert alert-info ng-hide" ng-show="controller.orgs.length == 0">
+        No organisations registered.
+    </p>
+</div>
+<table class="table table-striped table-bordered table-hover ng-hide" ng-show="controller.orgs.length != 0">
+    <thead>
+        <tr>
+            <th>Organisation</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Projects</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr data-ng-repeat="org in controller.orgs">
+            <td>
+                <a ng-click="controller.loadAndViewOrg(org);">{{ org.name }}</a>
+            </td>
+            <td>
+                {{ org.address.phoneNumber }}
+            </td>
+            <td>
+                {{ org.address.email }}
+            </td>
+            <td>
+                <span data-ng-repeat="proj in org.projectNames">
+                    {{ proj }}<br />
+                </span>
+            </td>
+        </tr>
+    </tbody>
+</table>

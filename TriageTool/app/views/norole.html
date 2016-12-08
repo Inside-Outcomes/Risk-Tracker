@@ -1,0 +1,19 @@
+﻿<div>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <ng-include src="'app/views/common/navbar_header.html'"></ng-include>
+            <div class="collapse navbar-collapse" data-collapse="isCollapsed">
+                <ng-include src="'app/views/common/logout_button.html'"></ng-include>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12" ng-switch="controller.view">
+                <h4>You have logged into Risk Tracker, but your account has not yet been fully set up. </h4>
+                <h4>Please contact your Risk Tracker administrator.</h4>
+            </div>
+        </div>
+    </div>
+</div>

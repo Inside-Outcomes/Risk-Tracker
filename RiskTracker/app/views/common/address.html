@@ -1,0 +1,11 @@
+﻿<div ng-hide="!address.details">
+    <p ng-bind-html="address.details|nl2br"></p>
+    <p>{{ address.postCode }} <span ng-show="brief && address.isInDeprivedArea"><small>[<strong>Area of Deprivation</strong>]</small></span>
+</div>
+<div ng-show="!address.details">
+    <p><strong>No address entered</strong></p>
+</div>
+<p></p>
+<p><strong>Phone number</strong> : {{ address.phoneNumber }}</p>
+<p><strong>Email</strong> : {{ address.email }}</p>
+<p class="ng-hide" ng-hide="brief"><strong>Website</strong> : {{ address.website }}</p>

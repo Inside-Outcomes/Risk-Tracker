@@ -1,0 +1,58 @@
+﻿<div class="row">
+    <div class="col-md-6">
+        <h3>{{controller.currentClient.name}}</h3>
+        <address-display address="controller.currentClient.address" brief="true"></address-display>
+    </div>
+
+    <div class="col-md-6">
+        <h3>Assessment by {{controller.referrals.by}}</h3>
+        <strong>Date: {{controller.referrals.date}}</strong>
+    </div>
+</div>
+
+<p></p>
+<h3>Assigned Risks</h3>
+<div ng-repeat="theme in controller.riskAssessment">
+    <div ng-repeat="category in theme.categories">
+        <div ng-repeat="risk in category.risks" ng-if="risk.status == 'atRisk'">
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>{{ risk.title }}</strong>
+                </div>
+
+                <div class="col-md-6">
+                    <div ng-repeat="agency in controller.referrals.referrals[risk.id]">
+                        <p><strong>{{agency.name}}</strong> <br /> {{agency.description}}
+                        <span ng-if="agency.phoneNumber"><br /><strong>Phone number</strong> : {{ agency.phoneNumber }}</span>
+                        <span ng-if="agency.email"><br /><strong>Email</strong> : <a href="mailto:{{ agency.email }}">{{ agency.email }}</a></span>
+                        <span ng-if="agency.website"><br /><strong>Website</strong> : <a href="{{ agency.website }}">{{ agency.website }}</a></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">&nbsp;</div>
+                <div class="col-md-4"><hr/></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Managed Risks</h3>
+<div ng-repeat="theme in controller.riskAssessment">
+    <div ng-repeat="category in theme.categories">
+        <div class="row" ng-repeat="risk in category.risks" ng-if="risk.status == 'resolvedRisk'">
+            <div class="col-md-6">
+                <strong>{{ risk.title }}</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Risk Scores</h3>
+<div ng-repeat="theme in controller.riskAssessment">
+   <div class="row">
+       <div class="col-md-4"><strong>{{ theme.title }}</strong></div>
+       <div class="col-md-2"><strong>{{ theme.score }}</strong></div>
+   </div>
+</div>

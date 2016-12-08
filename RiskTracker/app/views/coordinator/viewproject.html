@@ -1,0 +1,19 @@
+﻿<p>
+    <h2>{{controller.project.name}}</h2>
+</p>
+
+<tabset>
+    <tab heading="Staff" active="controller.viewStaff">
+        <div data-ng-repeat="staff in controller.allStaff">
+            <a ng-click="controller.editStaffForm(staff)">{{ staff.name }}</a> <br />
+        </div>
+    </tab>
+    <tab heading="Locations" active="controller.viewLocation">
+        <div data-ng-repeat="location in controller.allLocations">
+            <a ng-click="controller.editLocationForm(location)">{{ location.name }}</a><br />
+        </div>
+    </tab>
+    <tab heading="Additional Questions" active="controller.viewQuestions">
+        <ng-include src="'app/views/admin/projectquestionslist.html'"></ng-include>
+    </tab>
+</tabset>

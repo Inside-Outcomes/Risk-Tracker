@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html data-ng-app="AngularAuthApp">
+<head>
+    <title>Inside Outcomes Referral Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta content="IE=edge, chrome=1" http-equiv="X-UA-Compatible" />
+
+    <!-- <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.4/cerulean/bootstrap.min.css" rel="stylesheet" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" /> -->
+    <link href="app/css/bootstrap/bootstrap.css" rel="stylesheet"/>
+    <link href="app/css/font-awesome.min.css" rel="stylesheet"/>
+
+    <link href="app/css/site.css" rel="stylesheet" />
+    <link href="app/css/jquery.dataTables.css" rel="stylesheet"/>
+    <link href="app/css/loading-bar.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="wrap">
+        <div ng-view="">
+        </div>
+    </div>
+    <ng-include src="'app/views/common/footer.html'"></ng-include>
+
+    <!-- 3rd party libraries -->
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script> 
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.min.js"></script> -->
+    <script src="Scripts/jquery-1.11.2.min.js"></script>
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/angular-route.min.js"></script>  
+    
+    <script src="Scripts/jquery.dataTables.min.js"></script>
+    <script src="Scripts/angular-datatables.min.js"></script>
+    <script src="Scripts/angular-local-storage.min.js"></script>
+    <script src="Scripts/loading-bar.min.js"></script>
+    <script src="Scripts/moment.min.js"></script>
+    <script src="Scripts/ui-bootstrap-tpls-0.13.0-patched.js"></script>
+    <script src="Scripts/es5-shim.min.js"></script>
+    <script src="Scripts/ng-file-upload-shim.min.js"></script>
+    <script src="Scripts/ng-file-upload.min.js"></script>
+
+    <!-- Load app main script -->
+    <script src="app/app.js"></script>
+
+    <!-- Load services -->
+    <script src="app/services/authInterceptorService.js"></script>
+    <script src="app/services/authService.js"></script>
+    <script src="app/services/dataService.js"></script>
+    <script src="app/services/staffService.js"></script>
+    <!-- Load controllers -->
+    <script src="app/controllers/indexController.js"></script>
+    <script src="app/controllers/homeController.js"></script>
+
+    <script src="app/controllers/advisorControllerHelper.js"></script>
+    <script src="app/controllers/projectControllerHelper.js"></script>
+    <script src="app/controllers/organisationControlHelper.js"></script>
+    <script src="app/controllers/reportsControlHelper.js"></script>
+    <script src="app/controllers/clientControlHelper.js"></script>
+
+    <script src="app/controllers/adminOrgController.js"></script>
+    <script src="app/controllers/adminRisksController.js"></script>
+
+    <script src="app/controllers/advisorController.js"></script>
+    
+    <script src="app/controllers/userController.js"></script>
+       <!-- Load custom filters -->
+    <!-- Load custom directives -->
+
+</body>
+</html>

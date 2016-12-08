@@ -1,0 +1,5 @@
+﻿<h2>{{controller.currentLocation.name}} </h2>
+<h3>Choose Project</h3>
+<p ng-repeat="proj in controller.availableProjects">
+    <a ng-click="controller.selectProject(proj)">{{proj.name}}</a><br/>
+</p>

@@ -1,0 +1,24 @@
+﻿<a class="btn btn-info pull-right" ng-click="controller.loadAsCSV()">As CSV</a>
+
+<h3>Personal Circumstances Progress Report</h3>
+<div>{{controller.reportData.additional.clientCount}} Clients</div>
+
+<table class="progress">
+    <thead>
+        <tr>
+            <th></th>
+            <th><strong>A</strong></th>
+            <th><strong>B</strong></th>
+            <th><strong>C</strong></th>
+            <th><strong>D</strong></th>
+            <th><strong>Total</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="row in controller.reportData.data">
+            <td><strong>{{row.score}}</strong></td>
+            <td ng-repeat="p in row.progress track by $index" ng-attr-class="{{row.score}}{{$index}}">{{p}}</td>
+            <td>{{row.total}}</td>
+        </tr>
+    </tbody>
+</table>

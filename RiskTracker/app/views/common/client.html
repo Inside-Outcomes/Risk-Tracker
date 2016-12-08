@@ -1,0 +1,348 @@
+﻿<div class="pull-right">
+    <a class="btn btn-danger"
+       ng-hide="controller.currentClient.discharged"
+       ng-click="controller.clientDischarge()">Discharge Client</a>
+    <a class="btn btn-info"
+       ng-show="controller.currentClient.discharged"
+       ng-click="controller.clientReopenNoteDialog(controller.currentClient.name, controller.currentClient.id)">Reopen Client</a>
+    <h3 ng-show="controller.currentClient.discharged">
+       Discharged {{controller.currentClient.discharged |date:'dd MMM yyyy'}}
+    </h3>
+</div>
+<h2>{{controller.currentClient.name }} <small><span class="glyphicon glyphicon-edit" ng-click="controller.clientEditName()"></span></small></h2>
+<h3>Reference Id: {{controller.currentClient.referenceId}}<small><span class="glyphicon glyphicon-edit" ng-click="controller.clientEditReferenceId()"></span></small></h3>
+<p>
+    <span class="ng-hide" ng-hide="{{!controller.currentClient.address.phoneNumber}}">Phone number: <strong>{{ controller.currentClient.address.phoneNumber }}</strong></span>
+    <span class="ng-hide" ng-hide="{{!controller.currentClient.address.email}}">Email: <strong>{{ controller.currentClient.address.email }}</strong></span></p>
+
+<tabset>
+    <tab heading="Summary">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Additional Information</h4>
+                <div class="pull-right">
+                    <a class="btn btn-info btn-sm" ng-click="controller.clientGeneralNote(controller.currentClient.generalNote)">Edit additional information</a>
+                </div>
+                <div class="outline-box">
+                  <strong ng-bind-html="controller.currentClient.generalNote|nl2br"></strong>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>Current Risk Scores</h4>
+                <div class="outline-box">
+                    <div ng-repeat="theme in controller.riskAssessment">
+                        <div class="col-md-5 no-pad"><strong>{{theme.title}}</strong></div>
+                        <div><strong>{{theme.score}}</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Missing Demographic Data</h4>
+                <div class="outline-box">
+                    <missing-demographics demographics="controller.currentClient.demographics"></missing-demographics>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>Active Risks</h4>
+                <div class="outline-box">
+                    <div ng-repeat="theme in controller.riskAssessment">
+                        <div ng-repeat="category in theme.categories">
+                            <div ng-repeat="risk in category.risks">
+                                <div ng-show="risk.status == 'atRisk'"><strong>{{risk.title}}</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </tab>
+   <tab heading="Risk Map">
+        <div class="row">
+        <div class="col-md-12">
+            <span class="pull-right"><input type="checkbox" ng-checked="controller.showGuidance()" ng-click="controller.toggleGuidance()"/> Show Guidance</span>
+        </div>
+        <div class="col-md-4 riskTheme" ng-repeat="theme in controller.riskAssessment">
+            <h4>{{ theme.title }}</h4>
+            <div class="riskScores">
+                <table>
+                    <tr><td>Current Score :</td><td>&nbsp;</td><td><strong>{{ theme.score }}</strong></td></tr>
+                    <tr><td>Score on assessment :</td><td>&nbsp;</td><td><strong>{{ theme.initialScore }}</strong></td></tr>
+                    <tr><td>Highest Score :</td><td>&nbsp;</td><td><strong>{{ theme.highScore }}</strong></td></tr>
+                </table>
+            </div>
+            <div class="riskCategory" ng-repeat="category in theme.categories">
+                <strong>{{ category.title }}</strong>
+                <div class="riskRisk" ng-repeat="risk in category.risks" ng-class="risk.status">
+                    <p ng-show="risk.status == 'notAtRisk'" class="pull-right">
+                        <button class="btn btn-xs btn-risk" ng-click="controller.clientAddRisk(risk.id)">Assign</button>
+                    </p>
+                    <p ng-show="risk.status == 'atRisk'" class="pull-right">
+                        <button class="btn btn-xs btn-risk" ng-click="controller.clientResolveRisk(risk.id)">Resolve</button><br/>
+                        <button class="btn btn-xs btn-risk" ng-click="controller.clientRemoveRisk(risk.id)">Delete</button>
+                    </p>
+                    <p ng-show="risk.status == 'resolvedRisk'" class="pull-right">
+                        <button class="btn btn-xs btn-risk" ng-click="controller.clientReopenRisk(risk.id)">Reopen</button>
+                    </p> 
+                    <p>{{ risk.title }}
+                      <br/>
+                      <span class="text-muted small ng-hide" ng-show="risk.status == 'notAtRisk'">UNASSIGNED</span>
+                      <span class="text-muted small ng-hide" ng-show="risk.status == 'atRisk'">ASSIGNED</span>
+                      <span class="text-muted small ng-hide" ng-show="risk.status == 'resolvedRisk'">RESOLVED</span>
+                    </p>
+                    <p ng-show="controller.showGuidance()">
+                        {{ risk.guidance }}
+                    </p>
+                </div>
+            </div>
+            &nbsp;
+        </div>
+        </div>
+    </tab>
+    <tab heading="Questions" ng-show="controller.currentClient.questions">
+        <a class="btn btn-info btn-sm pull-right" ng-click="controller.clientEditQuestions()">Update Questions</a>
+        <div class="outline-box">
+            <questions-display questions="controller.currentClient.questions"></questions-display>
+        </div>
+    </tab>
+    <tab heading="Notes and Actions">
+        <div class="row">
+            <div class="col-md-10 col-sm-9">
+                <div data-ng-repeat="entry in controller.currentClient.timeline">
+                    <h4>{{entry.datestamp|date:'dd MMM yyyy'}}</h4>
+                    <div class="outline row">
+                        <div class="col-md-4">
+                          <strong ng-repeat="note in entry.notes"><span ng-bind-html="note.text|nl2br"></span>
+                            <small><span ng-show="note.id" class="glyphicon glyphicon-edit" ng-click="controller.clientEditNoteDialog(note.id, note.text)"></span></small>
+                            <br/>
+                          </strong>
+                        </div>
+                        <div class="col-md-4">
+                            <strong ng-repeat="action in entry.actions">{{action.text}}<br /></strong>
+                        </div>
+                        <div class="col-md-4">
+                            <div ng-repeat="riskScore in entry.riskScores" class="row">
+                                <div class="col-md-8 no-pad"><strong>{{riskScore.title}}</strong></div>
+                                <div><strong>{{riskScore.score}}</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-3">
+                <button class="btn btn-info btn-sm" style="width: 100%" ng-click="controller.clientAddNoteDialog()">Add<br />Note</button><br />
+                <br />
+                <button ng-hide="controller.currentClient.discharged" class="btn btn-info btn-sm" style="width: 100%" ng-click="controller.clientReferToService()">Refer to<br />another service</button><br />
+                <br/>
+                <button ng-hide="controller.currentClient.discharged" class="btn btn-info btn-sm" style="width: 100%" ng-click="controller.clientChangeLocationProject()">Change<br />location/project</button><br />
+                <br />
+                <button ng-hide="controller.currentClient.discharged" class="btn btn-warning btn-sm" style="width: 100%" ng-click="controller.clientDidNotAttend()">Did Not<br />Attend</button>
+            </div>
+        </div>
+    </tab>
+    <tab heading="Address">
+        <a class="btn btn-info btn-sm pull-right" ng-click="controller.clientEditAddress()">Update Address</a>
+        <div class="outline-box">
+            <address-display address="controller.currentClient.address" brief="true"></address-display>
+        </div>
+    </tab>
+    <tab heading="Demographic Info">
+        <a class="btn btn-info btn-sm pull-right" ng-click="controller.clientEditDemographics()">Update Info</a>
+        <div class="outline-box">
+            <demographics-display demographics="controller.currentClient.demographics"></demographics-display>
+        </div>
+    </tab>
+    <tab heading="Files">
+        <a class="btn btn-info btn-sm pull-right" ng-click="controller.clientChooseUploadFile()"><span class="glyphicon glyphicon-upload"></span> Upload Files</a>
+        <div class="outline-box">
+            <table>
+              <tr ng-repeat="file in controller.currentClient.files">
+                  <td>{{file.text}}</td>
+                  <td>&nbsp;&nbsp;<button class="btn btn-xs btn-primary" ng-click="controller.downloadFile(file.id)"><span class="glyphicon glyphicon-download"></span> Download</button></td>
+                  <td>&nbsp;&nbsp;<button class="btn btn-xs btn-danger" ng-click="controller.deleteFile(file.text, file.id)"><span class="glyphicon glyphicon-remove-sign"></span> Delete</button></td>
+              </tr>
+            </table>
+        </div>
+    </tab>
+</tabset>
+
+<script type="text/ng-template" id="dischargeDialog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body textwrapper">
+        <textarea data-ng-model="thingToEdit" cols="2" rows="8" placeholder="Add discharge note"></textarea>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" data-ng-click="update()">Discharge</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="referralDialog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Referral</h3>
+    </div>
+    <div class="modal-body">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Service" ng-model="thingToEdit.service" />
+            <div class="input-group-btn dropdown" dropdown>
+                <a class="btn btn-default dropdown-toggle" dropdown-toggle><span class="caret"></span></a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="input-md"><span ng-click="thingToEdit.service='Health Trainer'">&nbsp;&raquo; Health Trainer</span></li>
+                    <li class="input-md"><span ng-click="thingToEdit.service='Debt Advice'">&nbsp;&raquo; Advice</span></li>
+                </ul>
+            </div>
+        </div>
+        <textarea data-ng-model="thingToEdit.note" cols="80" rows="8" placeholder="Add note"></textarea>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="nameDialog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Update Name</h3>
+    </div>
+    <div class="modal-body">
+        <input placeholder="Name" data-ng-model="thingToEdit.name" type="text" class="form-control">
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" ng-disabled="!(thingToEdit.name)" ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="referenceIdDialog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Update Reference Id</h3>
+    </div>
+    <div class="modal-body">
+        <input placeholder="Reference Id" data-ng-model="thingToEdit.name" type="text" class="form-control">
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" ng-disabled="!(thingToEdit.name)" ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="addressDialog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Update Address</h3>
+    </div>
+    <div class="modal-body">
+        <address-form address="thingToEdit" notitle="true" nowebsite="true"></address-form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="questionsDialog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Update Questions</h3>
+    </div>
+    <div class="modal-body">
+        <questions-form questions="thingToEdit"></questions-form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="demographicDialog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Update Demographic Info</h3>
+    </div>
+    <div class="modal-body">
+        <demographics-form demographics="thingToEdit" notitle="true" modal="modal"></demographics-form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="uploadFileDialog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Upload Files</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-4">
+                <button class="btn btn-primary" ngf-select="" ngf-multiple="true" ng-model="thingToEdit.files">Choose files ...</button>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-6">
+                <div ngf-drop="" ng-model="thingToEdit.files" class="drop-box"
+                        ngf-drag-over-class="dragover" ngf-multiple="true">Drop files here</div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+
+        <div>{{thingToEdit.message}}</div>
+        <div class="progress" ng-show="thingToEdit.progress != 0">
+            <div class="ng-binding" style="width: {{thingToEdit.progress}}%" ng-bind="thingToEdit.progress + '%'"></div>
+        </div>
+        <div ng-show="thingToEdit.error">
+            {{thingToEdit.error}}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="update()"><i class="glyphicon glyphicon-eject"></i> Close</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="changeLocationProject.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Change Location or Project</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-4">Project : </div>
+            <div class="col-md-8">
+                <select ng-model="thingToEdit.projectId"
+                        ng-options="p.id as p.name for p in thingToEdit.projects"
+                        class="form-control"></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">Location : </div>
+            <div class="col-md-8">
+                <select ng-model="thingToEdit.locationId"
+                        ng-options="l.id as l.name for l in thingToEdit.locations"
+                        class="form-control"></select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="deleteClient.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body textwrapper">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Are you sure you want to delete this client record?</h3>
+                <h3>This record will be permanently deleted and can not be recovered.</h3>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> No</button>
+        <button class="btn btn-primary" data-ng-click="update()">Yes, delete the client</button>
+    </div>
+</script>

@@ -1,0 +1,8 @@
+﻿<h2 class="form-login-heading">New Project for {{controller.organisation.name}}</h2>
+
+<ng-include src="'app/views/admin/projectcoreform.html'"></ng-include>
+
+<button class="btn btn-info pull-right" 
+        type="submit" 
+        data-ng-disabled="!((controller.project.name) && (controller.project.riskFramework))"
+        data-ng-click="controller.addNewProject(controller.organisation, controller.project)">Create</button>

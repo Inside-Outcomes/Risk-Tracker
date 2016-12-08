@@ -1,0 +1,91 @@
+﻿<h3 class="ng-hide" ng-show="!notitle">Demographic Information</h3>
+<div class="row">
+    <div class="col-md-4">Employment status : </div>
+    <div class="col-md-8">
+        <select ng-model="demographics.client.employmentStatus"
+                ng-init="demographics.client.employmentStatus = demographics.client.employmentStatus || demographics.choices.employmentStatus[0]"
+                ng-options="o as o for o in demographics.choices.employmentStatus"
+                class="form-control"></select>
+    </div>
+
+    <div class="col-md-12">&nbsp;</div>
+    <div class="col-md-4">Ethnic origin : </div>
+    <div class="col-md-8">
+        <select ng-model="demographics.client.ethnicOrigin"
+                ng-init="demographics.client.ethnicOrigin = demographics.client.ethnicOrigin || demographics.choices.ethnicOrigin[0]"
+                ng-options="o as o for o in demographics.choices.ethnicOrigin"
+                class="form-control"></select>
+    </div>
+
+    <div class="col-md-4">Gender : </div>
+    <div class="col-md-8">
+        <select ng-model="demographics.client.gender"
+                ng-init="demographics.client.gender = demographics.client.gender || demographics.choices.gender[0]"
+                ng-options="g as g for g in demographics.choices.gender"
+                class="form-control"></select>
+    </div>
+    <div class="col-md-4">Date of birth : </div>
+    <div class="col-md-8">
+        <p class="input-group">
+            <input type="text" class="form-control"
+                   datepicker-popup="dd MMM yyyy"
+                   ng-model="demographics.client.dob"
+                   is-open="modal.opened"
+                   close-text="Close" />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="modal.open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+        </p>
+    </div>
+
+
+    <div class="col-md-12">&nbsp;</div>
+    <div class="col-md-4">Disability/Health : </div>
+    <div class="col-md-8">
+        <select ng-model="demographics.client.disability"
+                ng-init="demographics.client.disability = demographics.client.disability || demographics.choices.disability[0]"
+                ng-options="s as s for s in demographics.choices.disability"
+                class="form-control"></select>
+    </div>
+
+    <div class="col-md-4">Type of Disability/Condition: </div>
+    <div class="col-md-8">
+        <select ng-model="demographics.client.disabilityType"
+                ng-init="demographics.client.disabilityType = demographics.client.disabilityType || demographics.choices.disabilityType[0]"
+                ng-options="s as s for s in demographics.choices.disabilityType"
+                class="form-control"></select>
+    </div>
+
+    <div class="col-md-12">&nbsp;</div>
+    <div class="col-md-4">Marital Status : </div>
+    <div class="col-md-8">
+        <select ng-model="demographics.client.maritalStatus"
+                ng-init="demographics.client.maritalStatus = demographics.client.maritalStatus || demographics.choices.maritalStatus[0]"
+                ng-options="s as s for s in demographics.choices.maritalStatus"
+                class="form-control"></select>
+    </div>
+
+    <div class="col-md-12">&nbsp;</div>
+    <div class="col-md-4">Household : </div>
+    <div class="col-md-8">
+        <select ng-model="demographics.client.householdType"
+                ng-init="demographics.client.householdType = demographics.client.householdType || demographics.choices.householdType[0]"
+                ng-options="s as s for s in demographics.choices.householdType"
+                class="form-control"></select>
+    </div>
+    <div class="col-md-4">Housing : </div>
+    <div class="col-md-8">
+        <select ng-model="demographics.client.housingType"
+                ng-init="demographics.client.housingType = demographics.client.housingType || demographics.choices.housingType[0]"
+                ng-options="s as s for s in demographics.choices.housingType"
+                class="form-control"></select>
+    </div>
+    <div class="col-md-4">Monthly household income : </div>
+    <div class="col-md-8">
+        <select ng-model="demographics.client.householdIncome"
+                ng-init="demographics.client.householdIncome = demographics.client.householdIncome || demographics.choices.householdIncome[0]"
+                ng-options="s as s for s in demographics.choices.householdIncome"
+                class="form-control"></select>
+    </div>
+
+</div>

@@ -1,0 +1,24 @@
+﻿<div class="row">
+    <div class="col-md-10">
+        <h3><input placeholder="Risk Map Title" ng-model="controller.riskToEdit.title" type="text" class="form-control"></h3>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-info btn-sm pull-right"
+           ng-click="controller.createRisk(controller.riskToEdit)"
+           ng-disabled="!controller.riskToEdit.title || !controller.riskToEdit.theme || !controller.riskToEdit.category || !controller.riskToEdit.score">Save Risk</a>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <tr><td colspan="2"><input placeholder="Guidance" ng-model="controller.riskToEdit.guidance" type="text" class="form-control"></td></tr>
+    <tr><td><strong>Theme</strong></td><td><input placeholder="Theme" ng-model="controller.riskToEdit.theme" type="text" class="form-control"></td></tr>
+    <tr><td><strong>Category</strong></td><td><input placeholder="Category" ng-model="controller.riskToEdit.category" type="text" class="form-control"></td></tr>
+    <tr><td><strong>Grouping</strong></td><td><input placeholder="Grouping" ng-model="controller.riskToEdit.grouping" type="text" class="form-control"></td></tr>
+    <tr><td><strong>Score</strong></td><td><input placeholder="Score" ng-model="controller.riskToEdit.score" type="text" class="form-control"></td></tr>
+    <tr><td colspan="2"><strong>Framework outcomes</strong></td></tr>
+    <tr><td><strong>NIHCEG</strong></td><td><input placeholder="NIHCEG" ng-model="controller.riskToEdit.nihceg" type="text" class="form-control"></td></tr>
+    <tr><td><strong>IOST</strong></td><td><input placeholder="ISOT" ng-model="controller.riskToEdit.iost" type="text" class="form-control"></td></tr>
+    <tr><td><strong>HCP</strong></td><td><input placeholder="HCP" ng-model="controller.riskToEdit.hcp" type="text" class="form-control"></td></tr>
+    <tr><td><strong>SJOF</strong></td><td><input placeholder="SJOF" ng-model="controller.riskToEdit.sjof" type="text" class="form-control"></td></tr>
+    <tr><td><strong>ASCOF</strong></td><td><input placeholder="ASCOF" ng-model="controller.riskToEdit.ascof" type="text" class="form-control"></td></tr>
+</table>

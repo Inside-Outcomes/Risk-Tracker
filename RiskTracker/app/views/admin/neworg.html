@@ -1,0 +1,19 @@
+﻿<h2 class="form-login-heading">New Organisation</h2>
+<input type="text" class="form-control" placeholder="Name" data-ng-model="controller.neworg.name" required autofocus>
+
+
+<input type="text" class="form-control" placeholder="Primary contact" data-ng-model="controller.neworg.contact" />
+<address-form address="controller.neworg.address"></address-form>
+
+<h3>Risk Maps</h3>
+<div ng-repeat="riskMap in controller.riskMaps">
+    <input type="checkbox"
+            value="{{riskMap.name}}"
+            ng-click="controller.toggleOrganisationRiskMap(controller.neworg, riskMap.id)"
+            ng-checked="controller.neworg.riskMaps.indexOf(riskMap.id) != -1">  {{riskMap.name}}
+</div>
+
+<button class="btn btn-info pull-right" 
+        type="submit" 
+        data-ng-disabled="!(controller.neworg.name)"
+        data-ng-click="controller.createNewOrg(controller.neworg)">Create</button>

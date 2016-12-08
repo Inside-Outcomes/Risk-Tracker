@@ -1,0 +1,39 @@
+﻿<div class="ng-hide col-md-12" ng-show="clients.length">
+    <table datatable="ng" id="clienttable" dt-options="controller.dtOptions">
+        <thead>
+            <tr>
+                <th colspan="7">
+                    <span class="pull-right">
+                        <input type="checkbox" ng-checked="controller.showDischarged" ng-click="controller.showDischarged = !controller.showDischarged; controller.refreshClientList()" />
+                        Show Discharged Clients
+                    </span>
+                </th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Ref. Id</th>
+                <th>DoB</th>
+                <th>Last Update</th>
+                <th ng-hide="brief">Project</th>
+                <th ng-hide="brief">Location</th>
+                <th ng-show="controller.showDischarged">Discharged</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="client in clients">
+                <td><a ng-click="controller.openClient(client.id)">{{client.name}}</a></td>
+                <td>{{client.referenceId}}</td>
+                <td>{{client.dateOfBirth |date:'dd MMM yyyy'}}</td>
+                <td>{{client.lastUpdate |date:'dd MMM yyyy'}}</td>
+                <td ng-hide="brief">{{controller.projectName(client.projectId)}}</td>
+                <td ng-hide="brief">{{controller.locationName(client.locationId)}}</td>
+                <td ng-show="controller.showDischarged">{{client.discharged |date:'dd MMM yyyy'}} 
+                  <a ng-show="client.discharged" class="btn btn-info btn-xs pull-right ng-hide" ng-click='controller.clientReopenNoteDialog(client.name, client.id)'>Reopen</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="ng-hide col-md-12" ng-show="clients.length == 0">
+    <h4>No clients registered for {{controller.currentProject.name}} at {{controller.currentLocation.name}}</h4>
+</div>

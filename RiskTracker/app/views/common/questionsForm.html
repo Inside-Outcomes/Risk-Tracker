@@ -1,0 +1,13 @@
+﻿<div ng-repeat="q in questions" class="row">
+    <div class="col-md-4"><strong>{{q.question}}</strong> : </div>
+    <div class="col-md-8">
+        <select ng-show="q.options"
+                ng-model="q.answer"
+                ng-init="q.answer = q.answer || q.options[0]"
+                ng-options="o as o for o in q.options"
+                class="form-control"></select>
+        <input ng-hide="q.options" ng-model="q.answer" type="text" class="form-control">
+    </div>
+
+
+</div>

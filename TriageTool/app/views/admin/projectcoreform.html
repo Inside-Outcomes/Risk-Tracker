@@ -1,0 +1,9 @@
+﻿<input type="text" class="form-control" placeholder="Name" data-ng-model="controller.project.name" required autofocus>
+<select class="form-control" ng-model="controller.project.riskFramework">
+  <option value="">--Choose Risk Map--</option>
+  <option ng-repeat="riskmap in controller.allRiskmaps"
+          value="{{riskmap.name}}" ng-selected="controller.project.riskFramework == riskmap.name">
+        {{riskmap.name}}
+    </option>
+</select>
+<address-form address="controller.project.address"></address-form>

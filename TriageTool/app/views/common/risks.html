@@ -1,0 +1,37 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <span class="pull-right"><input type="checkbox" ng-checked="controller.showGuidance()" ng-click="controller.toggleGuidance()" /> Show Guidance</span>
+    </div>
+    <div class="col-md-4 riskTheme" ng-repeat="theme in controller.riskAssessment">
+        <h4>{{ theme.title }}</h4>
+        <div class="riskScores">
+            <table>
+                <tr><td>Current Score :</td><td>&nbsp;</td><td><strong>{{ theme.score }}</strong></td></tr>
+             </table>
+        </div>
+        <div class="riskCategory" ng-repeat="category in theme.categories">
+            <strong>{{ category.title }}</strong>
+            <div class="riskRisk" ng-repeat="risk in category.risks" ng-class="risk.status">
+                <p ng-show="risk.status == 'notAtRisk'" class="pull-right">
+                    <button class="btn btn-xs btn-risk" ng-click="controller.clientAddRisk(risk.id)">Assigned</button><br />
+                    <button class="btn btn-xs btn-risk" ng-click="controller.clientManageRisk(risk.id)">Managed</button>
+                </p>
+                <p ng-show="risk.status != 'notAtRisk'" class="pull-right">
+                    <button class="btn btn-xs btn-risk" ng-click="controller.clientRemoveRisk(risk.id)">Reset</button>
+                </p>
+                <p>
+                    {{ risk.title }}
+                    <br />
+                    <span class="text-muted small ng-hide" ng-show="risk.status == 'notAtRisk'">UNASSIGNED</span>
+                    <span class="text-muted small ng-hide" ng-show="risk.status == 'atRisk'">ASSIGNED</span>
+                    <span class="text-muted small ng-hide" ng-show="risk.status == 'managedRisk'">MANAGED</span>
+                    <span class="text-muted small ng-hide" ng-show="risk.status == 'resolvedRisk'">RESOLVED</span>
+                </p>
+                <p ng-show="controller.showGuidance()">
+                    {{ risk.guidance }}
+                </p>
+            </div>
+        </div>
+        &nbsp;
+    </div>
+</div>

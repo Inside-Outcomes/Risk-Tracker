@@ -1,0 +1,19 @@
+﻿<div ng-controller="indexController as index">
+    <ul class="nav navbar-nav navbar-right ng-hide" data-ng-show="index.isAuth">
+        <li class="dropdown" dropdown>
+            <a class="dropdown-toggle" dropdown-toggle><i class="glyphicon glyphicon-settings"></i> {{index.userName}} <i class="caret"></i></a>
+            <ul class="dropdown-menu">
+                <li ng-show="index.showAdvisor"><a ng-click="index.openAdvisor()">Advisor</a></li>
+                <li ng-show="index.showCoordinator"><a ng-click="index.openCoordinator()">Coordinator</a></li>
+                <li ng-show="index.showSupervisor"><a ng-click="index.openSupervisor()">Supervisor</a></li>
+                <li ng-show="index.showDivider"><hr /></li>
+                <li><a data-ng-click="index.openProfile()">Profile</a></li>
+                <li><hr /></li>
+                <li><a href="mailto:support@insideoutcomes.co.uk">Email Support</a></li>
+                <li><a href="http://insideoutcomes.co.uk/risk-tracker" target="rt-help">Help</a></li>
+                <li><hr /></li>
+                <li><a data-ng-click="index.logOut()">Logout</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>

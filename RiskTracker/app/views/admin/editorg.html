@@ -1,0 +1,16 @@
+﻿<h2 class="form-login-heading">Update {{controller.editorg.name}}</h2>
+<input type="text" class="form-control" placeholder="Name" data-ng-model="controller.editorg.name" required autofocus>
+<input type="text" class="form-control" placeholder="Primary contact" data-ng-model="controller.editorg.contact" />
+<address-form address="controller.editorg.address"></address-form>
+
+<div ng-if="controller.isAdmin">
+    <h3>Risk Maps</h3>
+    <div ng-repeat="riskMap in controller.riskMaps">
+        <input type="checkbox"
+               value="{{riskMap.name}}"
+               ng-click="controller.toggleOrganisationRiskMap(controller.editorg, riskMap.id)"
+               ng-checked="controller.editorg.riskMaps.indexOf(riskMap.id) != -1">  {{riskMap.name}}
+    </div>
+</div>
+
+<button class="btn btn-info pull-right" type="submit" data-ng-click="controller.updateOrg(controller.editorg)">Save</button>

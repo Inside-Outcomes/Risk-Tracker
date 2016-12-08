@@ -1,0 +1,10 @@
+﻿<h2 class="form-login-heading">New Location for {{controller.organisation.name}}</h2>
+
+<ng-include src="'app/views/admin/locationcoreform.html'"></ng-include>
+
+<button class="btn btn-info pull-right"
+        type="submit"
+        data-ng-disabled="!(controller.location.name)"
+        data-ng-click="controller.addNewLocation(controller.organisation, controller.location)">
+    Create
+</button>

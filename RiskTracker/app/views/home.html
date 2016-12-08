@@ -1,0 +1,23 @@
+﻿<div ng-controller="homeController as home">
+   <div class="col-md-2">&nbsp;</div>
+   <div class="col-md-8" ng-switch="home.needToLogin">
+       <div ng-switch-when='yes'>
+         <p>
+             <div class="navbar">
+                 <img width="350" class="center-block" src="app/images/risktracker.png" />
+             </div>
+         </p>
+         <h2 class="form-login-heading">Please Login</h2>
+         <p data-ng-hide="home.message == ''" class="alert alert-danger">{{home.message}}</p>
+         <p>
+           <input type="text" class="form-control" placeholder="Username" data-ng-model="home.loginData.userName" required autofocus>
+           <input type="password" class="form-control" placeholder="Password" data-ng-model="home.loginData.password" required>
+           <button class="btn btn-lg btn-info pull-right" type="submit" data-ng-click="home.login()">Login</button>
+         </p>
+       </div>
+       <div ng-switch-default>
+         <p class="alert alert-danger">Loading ...</p>
+       </div>
+   </div>
+   <div class="col-md-2">&nbsp;</div>
+</div>

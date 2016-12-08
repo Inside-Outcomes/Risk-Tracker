@@ -1,0 +1,26 @@
+﻿<a class="btn btn-info pull-right" ng-click="controller.loadAsCSV()">As CSV</a>
+
+<h3>Resolution Report</h3>
+<div>{{controller.reportData.additional.clientCount}} Clients</div>
+<div class="row">
+    <div class="col-md-6"><strong>Risk</strong></div>
+    <div class="col-md-2"><strong>Opened</strong></div>
+    <div class="col-md-2"><strong>Resolved</strong></div>
+</div>
+<div ng-repeat="theme in controller.reportData.data">
+    <div class="row">
+        <h4>{{theme.title}}</h4>
+    </div>
+    <div ng-repeat="cat in theme.categories">
+        <div class="row">
+            <strong>{{cat.title}}</strong>
+        </div>
+        <div ng-repeat="row in cat.rows">
+            <div class="row">
+                <div class="col-md-6">{{row.title}}</div>
+                <div class="col-md-2">{{row.opened}}</div>
+                <div class="col-md-2">{{row.closed}}</div>
+            </div>
+        </div>
+    </div>
+</div>

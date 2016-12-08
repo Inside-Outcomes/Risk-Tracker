@@ -1,0 +1,41 @@
+﻿<a class="btn btn-info pull-right" ng-click="controller.loadAsCSV()">As CSV</a>
+<h3>Ad Hoc Report</h3>
+<div>Project : {{controller.reportData.additional.project}}</div>
+<div>Location : {{controller.reportData.additional.location}}</div>
+
+<div>Sorted on {{controller.reportData.additional.field}}</div>
+<div>{{controller.reportData.additional.clientCount}} clients in this report</div>
+<br/><br/>
+
+<table style="border-style: solid; border-color: lightgray; width: 100%">
+    <tr style="border-style: solid; border-color: lightgray">
+        <td colspan="2"></td>
+        <td colspan="{{(theme.reduced!==null) ? 3 : 2}}" ng-repeat="theme in controller.reportData.data[0].themes" style="border-left-style: solid; border-left-color: lightgray; text-align: center">
+            <strong>{{theme.label}}</strong>
+        </td>
+    </tr>
+    <tr style="border-style: solid; border-color: lightgray">
+        <td>{{controller.reportData.additional.field}}</td>
+        <td style="border-left-style: solid; border-left-color: lightgray; text-align: center">Total number of clients</td>
+        <td ng-repeat-start="theme in controller.reportData.data[0].themes" style="border-left-style: solid; border-left-color: lightgray; text-align: center" colspan="2">
+            Clients with improved score
+        </td>
+        <td ng-repeat-end style="text-align: center" ng-if="theme.reduced !== null">
+            Clients with fewer issues
+        </td>
+     </tr>
+
+    <tr ng-repeat="row in controller.reportData.data" style="border-style: solid; border-color: lightgray">
+        <td><strong>{{row.label}}</strong></td>
+        <td style="border-left-style: solid; border-left-color: lightgray; text-align: center">{{row.clientCount}}</td>
+        <td ng-repeat-start="theme in row.themes" style="border-left-style: solid; border-left-color: lightgray; text-align: center">
+            {{theme.score}}
+        </td>
+        <td style="text-align: center">
+            {{theme.percentage}}%
+        </td>
+        <td ng-repeat-end style="text-align: center" ng-if="theme.reduced !== null">
+            {{theme.reduced}}
+        </td>
+    </tr>
+</table>

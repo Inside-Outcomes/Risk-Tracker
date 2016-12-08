@@ -1,0 +1,62 @@
+﻿<h2 class="form-login-heading">New client</h2>
+<input type="text" class="form-control" placeholder="Client name" data-ng-model="controller.newclient.name" required autofocus>
+<div class="row">
+    <div class="col-md-6">
+        <h3>Reference Id</h3>
+        <input type="text" class="form-control" placeholder="Reference Id" ng-model="controller.newclient.referenceId" ng-blur="controller.checkReferenceId()">
+        <div class="alert alert-danger" ng-show="controller.newclient.referenceWarning">
+            <p ng-show="controller.newclient.references.projects.length">
+                Already registered with
+                <span ng-repeat="p in controller.newclient.references.projects">
+                    <span ng-if="$index != 0">, </span>
+                    the {{p.project}} project
+                    <span ng-if="$last">. </span>
+                </span>
+            </p>
+            <p ng-show="controller.newclient.references.discharged.length">
+                Discharged from
+                <span ng-repeat="p in controller.newclient.references.discharged">
+                    <a class="btn btn-info btn-xs pull-right" ng-click='controller.clientReopenNoteDialog(p.name, p.guid)'>Reopen</a>
+                    <span ng-if="$index != 0">, </span>
+                    the {{p.project}} project - {{p.name}} 
+                    <span ng-if="$last">. </span>
+                </span>
+            </p>
+            <p ng-show="controller.newclient.references.external">
+                Registered with another organisation.
+            </p>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <address-form address="controller.newclient.address" nowebsite="true"></address-form>
+    </div>
+    <div class="col-md-6">
+        <h3>Referred by</h3>
+        <input placeholder="Referred by ..." data-ng-model="controller.newclient.referrer" class="form-control"/>
+
+        <h3>Referred to</h3>
+        <select ng-model="controller.newclient.projectId" class="form-control"
+                ng-change="controller.updateAvailableLocations(controller.newclient.projectId)">
+            <option value="">Select project ...</option>
+            <option ng-repeat="proj in controller.availableProjects"
+                    value="{{proj.id}}">
+                {{proj.name}}
+            </option>
+        </select>
+        <select ng-model="controller.newclient.locationId" class="form-control">
+            <option value="">Select location ...</option>
+            <option ng-repeat="loc in controller.availableLocations"
+                    value="{{loc.id}}">
+                {{loc.name}}
+            </option>
+        </select>
+    </div>
+</div>
+<button class="btn btn-info pull-right"
+        type="submit"
+        ng-disabled="!(controller.newclient.name) || !(controller.newclient.projectId) || !(controller.newclient.locationId)"
+        ng-click="controller.createNewClient()">
+    Create client
+</button>

@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiskTracker", "RiskTracker\RiskTracker.csproj", "{A1E34F76-A188-42FB-BAC0-0B932D950416}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiskTracker.Tests", "RiskTracker.Tests\RiskTracker.Tests.csproj", "{F4CBF02A-781C-43B6-92EB-F6F46F802421}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TriageTool", "TriageTool\TriageTool.csproj", "{1EDA14CF-B44D-4167-9BF6-61E8DC622F8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiskMapsCore", "RiskMapsCore\RiskMapsCore.csproj", "{75D807C3-1649-475C-9532-FCA597054CBA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1E34F76-A188-42FB-BAC0-0B932D950416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1E34F76-A188-42FB-BAC0-0B932D950416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1E34F76-A188-42FB-BAC0-0B932D950416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1E34F76-A188-42FB-BAC0-0B932D950416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4CBF02A-781C-43B6-92EB-F6F46F802421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4CBF02A-781C-43B6-92EB-F6F46F802421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4CBF02A-781C-43B6-92EB-F6F46F802421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4CBF02A-781C-43B6-92EB-F6F46F802421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EDA14CF-B44D-4167-9BF6-61E8DC622F8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EDA14CF-B44D-4167-9BF6-61E8DC622F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EDA14CF-B44D-4167-9BF6-61E8DC622F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EDA14CF-B44D-4167-9BF6-61E8DC622F8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75D807C3-1649-475C-9532-FCA597054CBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75D807C3-1649-475C-9532-FCA597054CBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75D807C3-1649-475C-9532-FCA597054CBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75D807C3-1649-475C-9532-FCA597054CBA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

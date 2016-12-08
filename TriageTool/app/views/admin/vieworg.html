@@ -1,0 +1,73 @@
+﻿<p>
+<button class="btn btn-danger pull-right"
+        type="submit"
+        data-ng-click="controller.deleteOrg()"
+        ng-if="controller.canDeleteOrg() && controller.organisation.candelete">
+    Remove
+</button>
+<button class="btn btn-warning pull-right"
+        type="submit"
+        data-ng-click="controller.suspendOrg()"
+        ng-if="controller.isAdmin && !controller.organisation.isSuspended">
+    Suspend
+</button>
+<button class="btn btn-warning pull-right"
+        type="submit"
+        data-ng-click="controller.activateOrg()"
+        ng-if="controller.isAdmin && controller.organisation.isSuspended">
+    Activate
+</button>
+</p>
+
+<h3 style="color:red; text-align:center; width:100%" ng-if="controller.organisation.isSuspended">This organisation is suspended</h3>
+
+<h2 class="form-login-heading">{{controller.currentorg.name}}</h2>
+<p class="ng-hide" ng-show="controller.organisation.contact">Main contact person is {{controller.organisation.contact}}</p>
+<button class="btn btn-info btn-sm pull-right" ng-click="controller.editOrg(controller.organisation)">Update Details</button>
+<table class="table">
+    <tr>
+        <td>
+            <span ng-bind-html="controller.organisation.address.details | nl2br"></span>
+            <br />
+            {{controller.organisation.address.postCode}}
+        </td>
+        <td>
+            <span ng-show="controller.organisation.address.phoneNumber">Phone: {{controller.organisation.address.phoneNumber}}<br /></span>
+            <span ng-show="controller.organisation.address.email">Email: {{controller.organisation.address.email}}<br /></span>
+            <span ng-show="controller.organisation.address.website">Website: <a href="{{controller.organisation.address.website}}">{{controller.organisation.address.website}}</a></span>
+        </td>
+    </tr>
+</table>
+
+<tabset>
+    <tab heading="Projects">
+        <div data-ng-repeat="proj in controller.allProjects">
+            <a ng-click="controller.editProjectForm(proj)">{{ proj.name }}</a><br/>
+        </div>
+    </tab>
+    <tab heading="Staff" active="controller.viewStaff">
+        <div data-ng-repeat="staff in controller.allStaff">
+            <a ng-click="controller.editStaffForm(staff)">{{ staff.name }}</a> <br/>
+        </div>
+    </tab>
+    <tab heading="Locations" active="controller.viewLocation">
+        <div data-ng-repeat="location in controller.allLocations">
+            <a ng-click="controller.editLocationForm(location)">{{ location.name }}</a><br />
+        </div>
+    </tab>
+</tabset>
+
+<script type="text/ng-template" id="confirmDialog.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+           <div class="col-md-12">{{thingToEdit}}</div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> No</button>
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-ok"></i> Yes</button>
+    </div>
+</script>

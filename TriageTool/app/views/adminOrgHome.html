@@ -1,0 +1,77 @@
+﻿<div ng-controller="adminOrgController as controller">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <button class="navbar-toggle" type="button" ng-init="isCollapsed=true" ng-click="isCollapsed = !isCollapsed">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <ng-include src="'app/views/common/navbar_header.html'"></ng-include>
+            <div class="collapse navbar-collapse" data-collapse="isCollapsed">
+                <ul class="nav navbar-nav" ng-switch="controller.view">
+                    <li class="dropdown" dropdown>
+                        <a class="dropdown-toggle" dropdown-toggle>Organisations <i class="caret"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#/admin/risks">Risk Maps</a></li>
+                        </ul>
+                    </li>
+                    <li ng-show="controller.organisation != null">
+                        <button class="btn navbar-btn"><strong>&raquo;{{controller.organisation.name}}</strong></button>
+                    </li>
+                    <li ng-show="controller.organisation != null">&nbsp;</li>
+
+                    <li ng-switch-when="home"><button class="btn btn-primary navbar-btn" ng-click="controller.newOrgForm()">New Organisation</button></li>
+                    <li ng-switch-when="viewOrg" dropdown>
+                        <a class="dropdown-toggle" dropdown-toggle>Add <i class="caret"></i></a>
+                        <ul class="dropdown-menu">
+                            <li><a ng-click="controller.addProjectForm(controller.organisation)">Add Project</a></li>
+                            <li><a ng-click="controller.addStaffForm(controller.organisation)">Add Staff Member</a></li>
+                            <li><a ng-click="controller.addLocationForm(controller.organisation)">Add Location</a></li>
+                        </ul>
+                    </li>
+                    <li ng-switch-when="viewOrg"><button class="btn btn-primary navbar-btn" ng-click="controller.loadClientList()">Clients</button></li>
+                    <li ng-switch-when="viewOrg"><button class="btn btn-primary navbar-btn" ng-click="controller.showReports()">Reports</button></li>
+                    <li ng-switch-when="viewOrg">&nbsp;</li>
+                    <li ng-switch-when="viewOrg"><button class="btn btn-warning navbar-btn" ng-click="controller.closeOrg()"><i class="glyphicon glyphicon-eject"></i> Close</button></li>
+                    <li ng-switch-when="clientlist"><button class="btn btn-primary navbar-btn" ng-click="controller.newClientForm()"><i class="glyphicon glyphicon-user"></i> New client</button></li>
+                    <li ng-switch-when="clientlist">&nbsp;</li>
+                    <li ng-switch-when="clientlist"><button class="btn btn-warning navbar-btn" ng-click="controller.viewOrg()"><i class="glyphicon glyphicon-eject"></i> Close</button></li>
+                    <li ng-switch-when="client"><button class="btn btn-danger navbar-btn" ng-click="controller.clientDelete()"><i class="glyphicon glyphicon-remove"></i> Delete Client</button></li>
+                    <li ng-switch-when="client">&nbsp;</li>
+                    <li ng-switch-when="client"><button class="btn btn-warning navbar-btn" ng-click="controller.showClientList()"><i class="glyphicon glyphicon-eject"></i> Close</button></li>
+                    <li ng-switch-when="newOrg"><button class="btn btn-danger navbar-btn" ng-click="controller.closeOrg()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button></li>
+                    <li ng-switch-when="reports"><button class="btn btn-warning navbar-btn" ng-click="controller.viewOrg()"><i class="glyphicon glyphicon-eject"></i> Close</button></li>
+                    <li ng-switch-default><button class="btn btn-danger navbar-btn" ng-click="controller.viewOrg()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button></li>
+                </ul>
+                <ng-include src="'app/views/common/logout_button.html'"></ng-include>
+            </div>
+        </div>
+    </nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12" ng-switch="controller.view">
+        <p data-ng-show="controller.message != ''" class="alert alert-danger ng-hide">
+            {{controller.message}}
+        </p>
+
+        <div ng-switch-when="home"><ng-include src="'app/views/admin/orglist.html'"></ng-include></div>
+        <div ng-switch-when="newOrg"><ng-include src="'app/views/admin/neworg.html'"></ng-include></div>   
+        <div ng-switch-when="viewOrg"><ng-include src="'app/views/admin/vieworg.html'"></ng-include></div>
+        <div ng-switch-when="clientlist"><client-list controller="controller" clients="controller.clientList"></client-list></div>
+        <div ng-switch-when="newclient"><ng-include src="'app/views/common/newclient.html'"></ng-include></div>
+        <div ng-switch-when="client"><ng-include src="'app/views/common/client.html'"></ng-include></div>
+        <div ng-switch-when="editOrg"><ng-include src="'app/views/admin/editorg.html'"></ng-include></div>
+        <div ng-switch-when="newProject"><ng-include src="'app/views/admin/newproject.html'"></ng-include></div>
+        <div ng-switch-when="editProject"><ng-include src="'app/views/admin/editproject.html'"></ng-include></div>
+        <div ng-switch-when="newStaff"><ng-include src="'app/views/admin/newstaff.html'"></ng-include></div>
+        <div ng-switch-when="editStaff"><ng-include src="'app/views/admin/editstaff.html'"></ng-include></div>
+        <div ng-switch-when="newLocation"><ng-include src="'app/views/admin/newlocation.html'"></ng-include></div>
+        <div ng-switch-when="editLocation"><ng-include src="'app/views/admin/editlocation.html'"></ng-include></div>
+        <div ng-switch-when="reports"><ng-include src="'app/views/reports/reportpicker.html'"></ng-include></div>
+    </div>
+  </div>
+</div>
+
+</div>

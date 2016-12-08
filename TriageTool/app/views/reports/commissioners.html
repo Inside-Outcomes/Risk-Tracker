@@ -1,0 +1,47 @@
+﻿<a class="btn btn-info pull-right" ng-click="controller.loadAsCSV()">As CSV</a>
+
+<h3>Commissioners Report</h3>
+<div>Project : {{controller.reportData.additional.project}}</div>
+<div>Location : {{controller.reportData.additional.location}}</div>
+<div>Start date : {{controller.reportData.additional.startDate|date:'dd MMM yyyy'}}</div>
+<div>End date : {{controller.reportData.additional.endDate|date:'dd MMM yyyy'}}</div>
+<br /><br />
+<div>{{controller.reportData.additional.clientsActive}} active clients </div>
+<div>{{controller.reportData.additional.clientsAssessed}} clients assessed</div>
+<div>{{controller.reportData.additional.clientsDischarged}} clients discharged</div>
+<br /><br />
+
+<table style="border-style: solid; border-color: lightgray">
+    <tr style="border-style: solid; border-color: lightgray">
+        <td style="border-style: solid; border-color: lightgray"></td>
+        <td style="border-style: solid; border-color: lightgray">Assessment</td>
+        <td style="border-style: solid; border-color: lightgray">Current</td>
+        <td style="border-style: solid; border-color: lightgray">Discharge</td>
+    </tr>
+    <tr ng-repeat="row in controller.reportData.data" style="border-style: solid; border-color: lightgray">
+        <td style="border-style: solid; border-color: lightgray">Average <strong>{{row.theme}} score</strong></td>
+        <td style="border-style: solid; border-color: lightgray; text-align: center">{{row.assessmentScore}}</td>
+        <td style="border-style: solid; border-color: lightgray; text-align: center">{{row.currentScore}}</td>
+        <td style="border-style: solid; border-color: lightgray; text-align: center">{{row.dischargeScore}}</td>
+    </tr>
+    <tr style="border-style: solid; border-color: lightgray">
+        <td style="border-style: solid; border-color: lightgray"></td>
+        <td style="border-style: solid; border-color: lightgray">Assessment</td>
+        <td style="border-style: solid; border-color: lightgray">Current</td>
+        <td style="border-style: solid; border-color: lightgray">Discharge</td>
+    </tr>
+    <tr ng-repeat="row in controller.reportData.data" style="border-style: solid; border-color: lightgray">
+        <td style="border-style: solid; border-color: lightgray">Average number of <strong>{{row.theme}} issues</strong></td>
+        <td style="border-style: solid; border-color: lightgray; text-align: center">{{row.assessmentIssues}}</td>
+        <td style="border-style: solid; border-color: lightgray; text-align: center">{{row.currentIssues}}</td>
+        <td style="border-style: solid; border-color: lightgray; text-align: center">{{row.dischargeIssues}}</td>
+    </tr>
+</table>
+
+<br/><br/>
+<div ng-repeat="row in controller.reportData.data">
+    <p>Clients with improved {{row.theme}} score : {{row.percentage}}%</p>
+    <p ng-if="row.reduced !== null">
+    Clients with reduced number of {{row.theme}} issues : {{row.reduced}}</p>
+    </p>
+</div>

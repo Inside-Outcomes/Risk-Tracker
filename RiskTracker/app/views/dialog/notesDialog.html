@@ -1,0 +1,11 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">{{title}}</h3>
+</div>
+<div class="modal-body textwrapper">
+    <textarea data-ng-model="thingToEdit" cols="2" rows="8" placeholder="Add note"></textarea>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+    <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+</div>
+

@@ -1,0 +1,30 @@
+﻿<div class="row">
+    <div class="col-md-10">
+        <h3><input placeholder="Risk Map Title" ng-model="controller.currentRiskMap.name" type="text" class="form-control"></h3>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-info btn-sm pull-right"
+           ng-click="controller.createRiskMap(controller.editRisks)"
+           ng-disabled="!controller.currentRiskMap.name">Save Risk Map</a>
+    </div>
+</div>
+{{ controller.editRisks.length }} of {{ controller.risks.length }} risks
+<table class="table table-striped table-bordered table-hover ng-hide" ng-show="controller.risks.length != 0">
+    <thead>
+        <tr><th>Theme</th><th>Risk</th><th>Category</th><th>Grouping</th></tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="risk in controller.risks">
+            <td>
+                <input type="checkbox"
+                       value="{{risk.id}}"
+                       ng-click="controller.toggleRiskMapRisk(controller.editRisks, risk)"
+                       ng-checked="controller.isRiskInRiskMap(controller.editRisks, risk)" />
+                {{ risk.theme }}
+            </td>
+            <td>{{ risk.title }}</td>
+            <td>{{ risk.category }}</td>
+            <td>{{ risk.grouping }}</td>
+        </tr>
+    </tbody>
+</table>

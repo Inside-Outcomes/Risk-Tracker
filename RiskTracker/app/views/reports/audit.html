@@ -1,0 +1,30 @@
+﻿<a class="btn btn-info pull-right" ng-click="controller.loadAsCSV()">As CSV</a>
+
+<h3>Audit Report</h3>
+<div>Project : {{controller.reportData.additional.project}}</div>
+<div>Location : {{controller.reportData.additional.location}}</div>
+<div>Period covered: {{controller.reportData.additional.startDate}} - {{ controller.reportData.additional.refDate}}</div>
+
+<div class="row">
+    <div class="col-md-12"><strong>New clients</strong></div>
+</div>
+<div class="row" ng-repeat="client in controller.reportData.data[0].clients">
+    <div class="col-md-12" ng-if="controller.isAdmin"><a href="/#/admin/client/{{client.id}}" target="client">{{client.name}}</a></div>
+    <div class="col-md-12" ng-if="!controller.isAdmin"><a href="/#/supervisor/client/{{client.id}}" target="client">{{client.name}}</a></div>
+</div>
+
+<div class="row">
+    <div class="col-md-12"><strong>Current clients</strong></div>
+</div>
+<div class="row" ng-repeat="client in controller.reportData.data[1].clients">
+    <div class="col-md-12" ng-if="controller.isAdmin"><a href="/#/admin/client/{{client.id}}" target="client">{{client.name}}</a></div>
+    <div class="col-md-12" ng-if="!controller.isAdmin"><a href="/#/supervisor/client/{{client.id}}" target="client">{{client.name}}</a></div>
+</div>
+
+<div class="row">
+    <div class="col-md-12"><strong>Clients Discharged</strong></div>
+</div>
+<div class="row" ng-repeat="client in controller.reportData.data[2].clients">
+    <div class="col-md-12" ng-if="controller.isAdmin"><a href="/#/admin/client/{{client.id}}" target="client">{{client.name}}</a></div>
+    <div class="col-md-12" ng-if="!controller.isAdmin"><a href="/#/supervisor/client/{{client.id}}" target="client">{{client.name}}</a></div>
+</div>

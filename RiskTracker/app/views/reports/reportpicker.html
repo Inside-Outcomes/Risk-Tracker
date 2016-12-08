@@ -1,0 +1,108 @@
+﻿<div class="row">
+    <div class="col-md-2"><strong>Report</strong></div>
+    <div class="col-md-4">
+        <p class="input-group">
+            <select class="form-control"
+                    ng-model="controller.reportView"
+                    ng-change="controller.selectReport()">
+                <option ng-repeat="report in controller.availableReports"
+                        ng-selected="controller.report.name == report.name"
+                        value="{{report.name}}">
+                    {{report.title}}
+                </option>
+            </select>
+        </p>
+    </div>
+</div>
+
+<div class="row">
+  <div class="col-md-2"><strong>Project</strong></div>
+  <div class="col-md-4">
+    <p class="input-group">
+        <select class="form-control" ng-model="controller.currentprojectid" ng-change="controller.updateReportLocations();controller.loadReport()">
+            <option value="">--Choose Project--</option>
+            <option ng-repeat="project in controller.currentprojects"
+                    value="{{project.id}}"
+                    ng-selected="controller.currentprojectid == project.id">
+                {{project.name}}
+            </option>
+        </select>
+    </p>
+  </div>
+</div>
+<div class="row" ng-if="controller.report.loc">
+    <div class="col-md-2"><strong>Location</strong></div>
+    <div class="col-md-4">
+        <p class="input-group">
+            <select class="form-control" ng-model="controller.currentlocationid" ng-change="controller.loadReport()">
+                <option value="">--All Locations--</option>
+                <option ng-repeat="location in controller.currentlocations"
+                        value="{{location.id}}"
+                        ng-selected="controller.currentlocationid == location.id">
+                    {{location.name}}
+                </option>
+            </select>
+        </p>
+    </div>
+</div>
+<div class="row" ng-if="controller.report.dates || controller.report.startdate">
+    <div class="col-md-2"><strong>Start date</strong></div>
+    <div class="col-md-4">
+        <p class="input-group">
+            <input type="text" class="form-control"
+                   datepicker-popup="dd MMM yyyy"
+                   ng-model="controller.startdate"
+                   ng-change="controller.loadReport()"
+                   is-open="controller.startdateopened"
+                   close-text="Close" />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="controller.opendatepicker($event, 'start')"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+        </p>
+    </div>
+</div>
+<div class="row" ng-if="controller.report.dates">
+    <div class="col-md-2"><strong>End date</strong></div>
+    <div class="col-md-4">
+        <p class="input-group">
+            <input type="text" class="form-control"
+                   datepicker-popup="dd MMM yyyy"
+                   ng-model="controller.enddate"
+                   ng-change="controller.loadReport()"
+                   is-open="controller.enddateopened"
+                   close-text="Close" />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="controller.opendatepicker($event, 'end')"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+        </p>
+    </div>
+</div>
+
+<div class="row" ng-if="controller.report.allfields">
+    <div class="col-md-2"><strong>Field</strong></div>
+    <div class="col-md-4">
+        <p class="input-group">
+            <select class="form-control" ng-model="controller.currentfield" ng-change="controller.loadReport()">
+                <option value="">--Choose field--</option>
+                <option ng-repeat="field in controller.allfields"
+                        value="{{field.field}}"
+                        ng-selected="controller.currentfield == field.id">
+                    {{field.label}}
+                </option>
+            </select>
+        </p>
+    </div>
+</div>
+<hr/>
+
+<div ng-switch="controller.report.name">
+    <div ng-switch-when="resolution"><ng-include src="'app/views/reports/resolution.html'"></ng-include></div>
+    <div ng-switch-when="pcprogress"><ng-include src="'app/views/reports/pcprogress.html'"></ng-include></div>
+    <div ng-switch-when="actionrequired"><ng-include src="'app/views/reports/actionrequired.html'"></ng-include></div>
+    <div ng-switch-when="activityreport"><ng-include src="'app/views/reports/activityreport.html'"></ng-include></div>
+    <div ng-switch-when="opendata"><ng-include src="'app/views/reports/opendata.html'"></ng-include></div>
+    <div ng-switch-when="adhoc"><ng-include src="'app/views/reports/adhoc.html'"></ng-include></div>
+    <div ng-switch-when="commissioners"><ng-include src="'app/views/reports/commissioners.html'"></ng-include></div>
+    <div ng-switch-when="audit"><ng-include src="'app/views/reports/audit.html'"></ng-include></div>
+    <div ng-switch-when="export"><ng-include src="'app/views/reports/export.html'"></ng-include></div>
+</div>

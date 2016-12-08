@@ -1,0 +1,179 @@
+﻿/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+#wrap {
+    min-height: 100%;
+    height: auto;
+    margin: 0 auto -60px;
+    padding-top: 70px;
+    padding-bottom: 60px;
+}
+
+#footer {
+    height: 60px;
+    background-color: #f5f5f5;
+}
+
+.text-muted {
+    margin: 20px 0;
+}
+
+
+[ng-click], [data-ng-click], [x-ng-click] {
+    cursor: pointer;
+}
+
+input.ng-invalid {
+    background-color: #d9edf7;
+}
+input.ng-unmatch {
+    background-color: #fcf8e3;
+}
+
+.riskTheme {
+    background-color : lightgray;
+    border-radius: 6px;
+}
+
+.riskScores {
+    background-color : white;
+    border-radius: 6px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.riskCategory {
+    background-color : white;
+    border-radius: 6px;
+    margin-top: 9px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+}
+
+.riskRisk {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.btn-risk {
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgray;
+    margin-top: 2px;
+    color: #555555;
+}
+
+.notAtRisk {
+    background-color : beige;
+    border-color: lightgray;
+}
+.atRisk {
+    background-color: orangered;
+    border-color: red;
+    color: white;
+}
+.resolvedRisk {
+    background-color: lightgreen;
+    border-color: green;
+}
+.managedRisk {
+    background-color: gold;
+    border-color: gold;
+}
+
+.outline-box {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 6px;
+    border-color: #dddddd;
+    min-height: 150px;
+    padding-left: 20px;
+}
+
+.outline {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 6px;
+    border-color: #dddddd;
+    padding-left: 20px;
+}
+
+.no-pad {
+    padding-left: 0px;
+}
+
+table.progress {
+    width: 100%; 
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: 1px solid gray;
+}
+
+table.progress th {
+    border: 1px solid gray;
+    text-align: center;
+}
+
+table.progress td {
+    border: 1px solid gray;
+    text-align: center;
+}
+
+td.A1, td.A2, td.A3, td.B2, td.B3, td.C3 {
+    background: lightgreen;
+}
+
+td.A0, td.B1, td.C2, td.D3 {
+    background: yellow;
+}
+
+td.B0, td.C0, td.C1, td.D0, td.D1, td.D2 {
+    background: red;
+    color: white;
+}
+
+.drop-box {
+    background: #f8f8f8 none repeat scroll 0 0;
+    border: 5px dashed #ddd;
+    float: left;
+    height: 65px;
+    margin-left: 10px;
+    padding-top: 25px;
+    text-align: center;
+    width: 100%;
+}
+
+.drop-box.dragover { 
+    border: 5px dashed blue;
+}
+
+textarea {
+    width: 100%;
+}
+
+.textwrapper {
+    margin: 5px 0;
+    padding: 3px;
+}
+
+.btn {
+    min-width: 120px;
+}
+
+.form-control:focus {
+    border-color: #d1bcd1;
+}

@@ -1,0 +1,31 @@
+﻿<button class="btn btn-info pull-right"
+        type="submit"
+        data-ng-disabled="!((controller.project.name) && (controller.project.riskFramework))"
+        data-ng-click="controller.addProjectQuestion(controller.organisation, controller.project)">
+    New question
+</button>
+<table>
+    <tr ng-repeat="question in controller.project.questions" valign="top">
+        <td><a ng-click="controller.updateProjectQuestion(controller.organisation, controller.project, question)">{{question.question}}</a></td>
+        <td>&nbsp;&nbsp;</td>
+        <td ng-bind-html="question.answers | nl2br"></td>
+    </tr>
+</table>
+
+<script type="text/ng-template" id="projectQuestion.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Project Question</h3>
+    </div>
+    <div class="modal-body">
+        <input placeholder="Question" data-ng-model="thingToEdit.question" type="text" class="form-control">
+        <textarea placeholder="Answers" data-ng-model="thingToEdit.answers" rows="4" cols="*" class="form-control"></textarea>
+        <small>
+            Add predefined answers, one per line.<br />
+            For free-text answers leave this box blank.
+        </small>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+    </div>
+</script>

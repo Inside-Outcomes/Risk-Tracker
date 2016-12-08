@@ -1,0 +1,57 @@
+﻿<div ng-controller="userController as controller">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <button class="navbar-toggle" type="button" ng-init="isCollapsed=true" ng-click="isCollapsed = !isCollapsed">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <ng-include src="'app/views/common/navbar_header.html'"></ng-include>
+            <div class="collapse navbar-collapse" data-collapse="isCollapsed">
+                <ul class="nav navbar-nav" ng-switch="controller.view">
+                    <li><a class="btn btn-warning navbar-btn" href="#/"><i class="glyphicon glyphicon-eject"></i> Close</a></li>
+                </ul>
+                <ng-include src="'app/views/common/logout_button.html'"></ng-include>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12" ng-switch="controller.view">
+                <p data-ng-show="controller.message != ''" class="alert alert-danger ng-hide">
+                    {{controller.message}}
+                </p>
+
+                <tabset>
+                    <tab heading="Contact Details" ng-if="!controller.isAdmin">
+                        <input type="text" class="form-control" placeholder="Name" data-ng-model="controller.user.name" required autofocus>
+                        <input type="text" class="form-control" placeholder="Phone Number" data-ng-model="controller.user.phoneNumber">
+                        <input type="text" class="form-control" placeholder="Email" data-ng-model="controller.user.email">
+                        <button class="btn btn-info pull-right"
+                                type="submit"
+                                data-ng-disabled="!controller.user.name"
+                                data-ng-click="controller.updateDetails()">
+                            Update Details
+                        </button>
+                    </tab>
+                    <tab heading="Change Password">
+                        <input type="text" class="form-control" placeholder="Password" data-ng-model="controller.user.password"
+                               data-ng-class="{'ng-unmatch':(controller.user.password != controller.user.confirmPassword)}" required>
+                        <input type="text" class="form-control" placeholder="Confirm Password" data-ng-model="controller.user.confirmPassword"
+                               data-ng-class="{'ng-unmatch':(controller.user.password != controller.user.confirmPassword)}" required>
+                        <button class="btn btn-info pull-right"
+                                type="submit"
+                                data-ng-disabled="!((controller.user.password) && (controller.user.confirmPassword) && (controller.user.password == controller.user.confirmPassword) && (controller.user.password.length >= 6))"
+                                data-ng-click="controller.updatePassword()">
+                            Change Password
+                        </button>
+
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+
+</div>

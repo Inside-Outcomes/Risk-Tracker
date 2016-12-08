@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1EDA14CF-B44D-4167-9BF6-61E8DC622F8E}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TriageTool</RootNamespace>
+    <AssemblyName>TriageTool</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.1.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.1.0\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.1.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Cors">
+      <HintPath>..\packages\Microsoft.Owin.Cors.3.0.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Cors">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.0.0\lib\net45\System.Web.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Owin.5.2.2\lib\net45\System.Web.Http.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.2\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.2\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app\css\bootstrap\bootstrap.css" />
+    <Content Include="app\css\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="app\css\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="app\css\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="app\css\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="app\images\logo.png" />
+    <Content Include="app\views\common\referrals.html" />
+    <Content Include="app\views\common\risks.html" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Scripts\es5-shim.map" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app\app.js" />
+    <Content Include="app\controllers\adminOrgController.js" />
+    <Content Include="app\controllers\adminRisksController.js" />
+    <Content Include="app\controllers\advisorController.js" />
+    <Content Include="app\controllers\advisorControllerHelper.js" />
+    <Content Include="app\controllers\clientControlHelper.js" />
+    <Content Include="app\controllers\homeController.js" />
+    <Content Include="app\controllers\indexController.js" />
+    <Content Include="app\controllers\organisationControlHelper.js" />
+    <Content Include="app\controllers\projectControllerHelper.js" />
+    <Content Include="app\controllers\reportsControlHelper.js" />
+    <Content Include="app\controllers\userController.js" />
+    <Content Include="app\css\font-awesome.min.css" />
+    <Content Include="app\css\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="app\css\jquery.dataTables.css" />
+    <Content Include="app\css\loading-bar.css" />
+    <Content Include="app\css\loading-bar.min.css" />
+    <Content Include="app\css\site.css" />
+    <Content Include="app\images\icon.png" />
+    <Content Include="app\images\sort_asc.png" />
+    <Content Include="app\images\sort_asc_disabled.png" />
+    <Content Include="app\images\sort_both.png" />
+    <Content Include="app\images\sort_desc.png" />
+    <Content Include="app\images\sort_desc_disabled.png" />
+    <Content Include="app\services\authInterceptorService.js" />
+    <Content Include="app\services\authService.js" />
+    <Content Include="app\services\dataService.js" />
+    <Content Include="app\services\staffService.js" />
+    <Content Include="app\views\adminOrgHome.html" />
+    <Content Include="app\views\adminRisksHome.html" />
+    <Content Include="app\views\admin\editlocation.html" />
+    <Content Include="app\views\admin\editorg.html" />
+    <Content Include="app\views\admin\editproject.html" />
+    <Content Include="app\views\admin\editrisk.html" />
+    <Content Include="app\views\admin\editriskmap.html" />
+    <Content Include="app\views\admin\editstaff.html" />
+    <Content Include="app\views\admin\locationcoreform.html" />
+    <Content Include="app\views\admin\newlocation.html" />
+    <Content Include="app\views\admin\neworg.html" />
+    <Content Include="app\views\admin\newproject.html" />
+    <Content Include="app\views\admin\newrisk.html" />
+    <Content Include="app\views\admin\newriskmap.html" />
+    <Content Include="app\views\admin\newstaff.html" />
+    <Content Include="app\views\admin\orglist.html" />
+    <Content Include="app\views\admin\projectcoreform.html" />
+    <Content Include="app\views\admin\projectquestionslist.html" />
+    <Content Include="app\views\admin\risk.html" />
+    <Content Include="app\views\admin\riskmap.html" />
+    <Content Include="app\views\admin\riskmaplist.html" />
+    <Content Include="app\views\admin\staffcoreform.html" />
+    <Content Include="app\views\admin\vieworg.html" />
+    <Content Include="app\views\advisor.html" />
+    <Content Include="app\views\common\address.html" />
+    <Content Include="app\views\common\addressform.html" />
+    <Content Include="app\views\common\clientlist.html" />
+    <Content Include="app\views\common\demographics.html" />
+    <Content Include="app\views\common\demographicsForm.html" />
+    <Content Include="app\views\common\footer.html" />
+    <Content Include="app\views\common\logout_button.html" />
+    <Content Include="app\views\common\missingDemographics.html" />
+    <Content Include="app\views\common\navbar_header.html" />
+    <Content Include="app\views\advisor\triage.html" />
+    <Content Include="app\views\common\questions.html" />
+    <Content Include="app\views\common\questionsForm.html" />
+    <Content Include="app\views\dialog\notesDialog.html" />
+    <Content Include="app\views\home.html" />
+    <Content Include="app\views\norole.html" />
+    <Content Include="app\views\profile.html" />
+    <Content Include="app\views\reports\actionrequired.html" />
+    <Content Include="app\views\reports\activityreport.html" />
+    <Content Include="app\views\reports\adhoc.html" />
+    <Content Include="app\views\reports\audit.html" />
+    <Content Include="app\views\reports\commissioners.html" />
+    <Content Include="app\views\reports\export.html" />
+    <Content Include="app\views\reports\opendata.html" />
+    <Content Include="app\views\reports\pcprogress.html" />
+    <Content Include="app\views\reports\reportpicker.html" />
+    <Content Include="app\views\reports\resolution.html" />
+    <Content Include="index.html" />
+    <Content Include="Scripts\angular-datatables.min.js" />
+    <Content Include="Scripts\angular-local-storage.min.js" />
+    <Content Include="Scripts\angular-route.min.js" />
+    <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\es5-shim.min.js" />
+    <Content Include="Scripts\FileAPI.flash.swf" />
+    <Content Include="Scripts\FileAPI.js" />
+    <Content Include="Scripts\FileAPI.min.js" />
+    <Content Include="Scripts\jquery-1.11.2.min.js" />
+    <Content Include="Scripts\jquery.dataTables.min.js" />
+    <Content Include="Scripts\loading-bar.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\ng-file-upload-all.js" />
+    <Content Include="Scripts\ng-file-upload-all.min.js" />
+    <Content Include="Scripts\ng-file-upload-shim.js" />
+    <Content Include="Scripts\ng-file-upload-shim.min.js" />
+    <Content Include="Scripts\ng-file-upload.js" />
+    <Content Include="Scripts\ng-file-upload.min.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\ui-bootstrap-tpls-0.13.0-patched.js" />
+    <Content Include="packages.config" />
+    <None Include="Scripts\_references.js" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\DataConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ClientsController.cs" />
+    <Compile Include="Controllers\GraphController.cs" />
+    <Compile Include="Controllers\MIMEAssistant.cs" />
+    <Compile Include="Controllers\OrganisationController.cs" />
+    <Compile Include="Controllers\ReferenceIdController.cs" />
+    <Compile Include="Controllers\RiskMapController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helper.cs" />
+    <Compile Include="Models\ReferralReport.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\Header.cs" />
+    <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
+    <Compile Include="Providers\SimpleRefreshTokenProvider.cs" />
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RiskMapsCore\RiskMapsCore.csproj">
+      <Project>{75d807c3-1649-475c-9532-fca597054cba}</Project>
+      <Name>RiskMapsCore</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49333</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:49333/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

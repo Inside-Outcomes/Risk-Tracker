@@ -1,0 +1,24 @@
+﻿<a class="btn btn-info pull-right" ng-click="controller.loadAsCSV()">As CSV</a>
+
+<h3>Open Data Report</h3>
+<div>Project : {{controller.reportData.additional.project}}</div>
+<div>Start date : {{controller.reportData.additional.startDate|date:'dd MMM yyyy'}}</div>
+<div>End date : {{controller.reportData.additional.endDate|date:'dd MMM yyyy'}}</div>
+<br /><br />
+<div ng-repeat="postcode in controller.reportData.data">
+  <div class="row">
+    <div class="col-md-3"><h4>{{postcode.postCode}}</h4><br/>{{postcode.clientCount}} clients</div>
+    <div class="col-md-3"><strong>Assessed</strong></div>
+    <div class="col-md-6">
+        <div ng-repeat="risk in postcode.assessed">{{risk.risk}} : {{risk.count}}<br /></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-3"><strong>Resolved</strong></div>
+    <div class="col-md-6">
+        <div ng-repeat="risk in postcode.resolved">{{risk.risk}} : {{risk.count}}<br /></div>
+    </div>
+  </div>
+    <hr/>
+</div>

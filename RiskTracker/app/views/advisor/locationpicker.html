@@ -1,0 +1,6 @@
+﻿<h3>Choose Location</h3>
+<p><a ng-click="controller.selectAllLocations()">All locations</a></p>
+<p></p>
+<p ng-repeat="loc in controller.allLocations">
+    <a ng-click="controller.selectLocation(loc)">{{loc.name}}</a><br />
+</p>

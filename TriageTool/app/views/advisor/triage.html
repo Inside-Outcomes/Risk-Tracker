@@ -1,0 +1,101 @@
+﻿
+<div ng-switch="controller.wizard">
+    <div ng-switch-when="client"> 
+        <button class="btn btn-info pull-right" type="submit"
+                ng-disabled="!(controller.currentClient.name)  || !(controller.currentClient.address.email)"
+                ng-click="controller.nextToRiskMap()">
+            Next &raquo;
+        </button>
+        <h3>1 - Client Details</h3>
+
+        <input type="text" class="form-control" placeholder="Client name" data-ng-model="controller.currentClient.name" required autofocus>
+        <address-form address="controller.currentClient.address" notitle="true" nowebsite="true"></address-form>
+    </div>
+
+    <div ng-switch-when="riskmap">
+        <button class="btn btn-info pull-right" type="submit"
+                ng-click="controller.nextToReferrals()">
+            Next &raquo;
+        </button>
+        <button class="btn btn-info pull-right" type="submit"
+                ng-click="controller.backToClient()">
+            &laquo; Back
+        </button>
+        <h3>2 - Risks for {{controller.currentClient.name}}</h3>
+
+        <ng-include src="'app/views/common/risks.html'">
+    </div>
+
+    <div ng-switch-when="referrals">
+        <button class="btn btn-danger pull-right" type="submit"
+                ng-click="controller.completeWizard()">
+           Finish
+       </button>
+       <button class="btn btn-info pull-right" type="submit"
+               ng-click="controller.backToRiskMap()">
+           &laquo; Back
+       </button>
+       <h3>3 - Referral Report for {{controller.currentClient.name}}</h3>
+ 
+       <ng-include src="'app/views/common/referrals.html'">   
+    </div>
+</div>
+
+<script type="text/ng-template" id="completedReport.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Referral Report Completed</h3>
+    </div>
+    <div class="modal-body">
+        <p>Report emailed to {{thingToEdit.name}} at {{thingToEdit.address.email}}</p>
+        <p>Report Printed</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> OK</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="changeLocationProject.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Change Location or Project</h3>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-4">Project : </div>
+            <div class="col-md-8">
+                <select ng-model="thingToEdit.projectId"
+                        ng-options="p.id as p.name for p in thingToEdit.projects"
+                        class="form-control"></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">Location : </div>
+            <div class="col-md-8">
+                <select ng-model="thingToEdit.locationId"
+                        ng-options="l.id as l.name for l in thingToEdit.locations"
+                        class="form-control"></select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="deleteClient.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body textwrapper">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Are you sure you want to delete this client record?</h3>
+                <h3>This record will be permanently deleted and can not be recovered.</h3>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> No</button>
+        <button class="btn btn-primary" data-ng-click="update()">Yes, delete the client</button>
+    </div>
+</script>

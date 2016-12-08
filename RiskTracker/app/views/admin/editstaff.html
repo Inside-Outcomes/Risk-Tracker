@@ -1,0 +1,33 @@
+﻿
+<button class="btn btn-danger pull-right"
+        type="submit"
+        data-ng-click="controller.deleteStaffMember(controller.organisation, controller.staff)">
+    Remove
+</button>
+
+<h2 class="form-login-heading">Update {{controller.staff.name}}</h2>
+
+<tabset>
+    <tab heading="Details">
+        <ng-include src="'app/views/admin/staffcoreform.html'"></ng-include>
+
+        <button class="btn btn-info pull-right"
+                type="submit"
+                data-ng-disabled="!(controller.staff.name)"
+                data-ng-click="controller.updateStaffMember(controller.organisation, controller.staff)">
+            Save
+        </button>
+    </tab>
+    <tab heading="Change Password">
+        <input type="text" class="form-control" placeholder="Password" data-ng-model="controller.staff.password"
+                data-ng-class="{'ng-unmatch':(controller.user.password != controller.user.confirmPassword)}" required>
+        <input type="text" class="form-control" placeholder="Confirm Password" data-ng-model="controller.staff.confirmPassword"
+                data-ng-class="{'ng-unmatch':(controller.user.password != controller.user.confirmPassword)}" required>
+        <button class="btn btn-info pull-right"
+                type="submit"
+                data-ng-disabled="!((controller.staff.password) && (controller.staff.confirmPassword) && (controller.staff.password == controller.staff.confirmPassword) && (controller.staff.password.length >= 6))"
+                data-ng-click="controller.updateStaffPassword(controller.organisation, controller.staff)">
+            Change Password
+        </button>
+    </tab>
+</tabset>

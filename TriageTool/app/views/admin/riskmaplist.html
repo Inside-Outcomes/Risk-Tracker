@@ -1,0 +1,35 @@
+﻿<div class="ng-hide" ng-hide="controller.message != ''">
+    <p class="alert alert-info ng-hide" ng-show="controller.riskmaps.length == 0">
+        No risk maps registered.
+    </p>
+</div>
+<tabset>
+    <tab heading="Risk Map">
+        <table class="table table-striped table-bordered table-hover ng-hide" ng-show="controller.riskmaps.length != 0">
+            <tbody>
+                <tr data-ng-repeat="riskmap in controller.riskmaps">
+                    <td>
+                        <a ng-click="controller.loadAndViewRiskMap(riskmap);">{{ riskmap.name }}</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </tab>
+    <tab heading="Risks" active="controller.viewRisks">
+        <table class="table table-striped table-bordered table-hover ng-hide" ng-show="controller.risks.length != 0">
+            <thead>
+                <tr><th>Theme</th><th>Risk</th><th>Category</th><th>Grouping</th></tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="risk in controller.risks">
+                    <td>{{ risk.theme }}</td>
+                    <td>
+                        <a ng-click="controller.loadAndViewRisk(risk);">{{ risk.title }}</a>
+                    </td>
+                    <td>{{ risk.category }}</td>
+                    <td>{{ risk.grouping }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </tab>
+</tabset>
