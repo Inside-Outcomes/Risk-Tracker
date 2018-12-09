@@ -15,11 +15,11 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" ng-if="controller.report.projects">
   <div class="col-md-2"><strong>Project</strong></div>
   <div class="col-md-4">
     <p class="input-group">
-        <select class="form-control" ng-model="controller.currentprojectid" ng-change="controller.updateReportLocations();controller.loadReport()">
+        <select class="form-control" ng-model="controller.currentprojectid" ng-change="controller.loadReport()">
             <option value="">--Choose Project--</option>
             <option ng-repeat="project in controller.currentprojects"
                     value="{{project.id}}"
@@ -30,21 +30,7 @@
     </p>
   </div>
 </div>
-<div class="row" ng-if="controller.report.loc">
-    <div class="col-md-2"><strong>Location</strong></div>
-    <div class="col-md-4">
-        <p class="input-group">
-            <select class="form-control" ng-model="controller.currentlocationid" ng-change="controller.loadReport()">
-                <option value="">--All Locations--</option>
-                <option ng-repeat="location in controller.currentlocations"
-                        value="{{location.id}}"
-                        ng-selected="controller.currentlocationid == location.id">
-                    {{location.name}}
-                </option>
-            </select>
-        </p>
-    </div>
-</div>
+
 <div class="row" ng-if="controller.report.dates || controller.report.startdate">
     <div class="col-md-2"><strong>Start date</strong></div>
     <div class="col-md-4">
@@ -96,13 +82,6 @@
 <hr/>
 
 <div ng-switch="controller.report.name">
-    <div ng-switch-when="resolution"><ng-include src="'app/views/reports/resolution.html'"></ng-include></div>
-    <div ng-switch-when="pcprogress"><ng-include src="'app/views/reports/pcprogress.html'"></ng-include></div>
-    <div ng-switch-when="actionrequired"><ng-include src="'app/views/reports/actionrequired.html'"></ng-include></div>
-    <div ng-switch-when="activityreport"><ng-include src="'app/views/reports/activityreport.html'"></ng-include></div>
     <div ng-switch-when="opendata"><ng-include src="'app/views/reports/opendata.html'"></ng-include></div>
-    <div ng-switch-when="adhoc"><ng-include src="'app/views/reports/adhoc.html'"></ng-include></div>
-    <div ng-switch-when="commissioners"><ng-include src="'app/views/reports/commissioners.html'"></ng-include></div>
-    <div ng-switch-when="audit"><ng-include src="'app/views/reports/audit.html'"></ng-include></div>
-    <div ng-switch-when="export"><ng-include src="'app/views/reports/export.html'"></ng-include></div>
+    <div ng-switch-when="agencyreview"><ng-include src="'app/views/reports/agencyreview.html'"></ng-include></div>
 </div>

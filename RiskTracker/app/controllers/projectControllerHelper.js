@@ -154,8 +154,37 @@ var projectControllerHelper = (function () {
                 obj.userName = obj.name.toLowerCase().replace(/ /g, '');
             } // generateUserName
 
+            controller.addReferralAgencyForm = function (org) {
+                controller.agency = { associatedRiskIds: [] };
+                controller.reviewdateopen = false;
+                controller.view = 'newReferralAgency';
+                controller.buttonView = 'cancelToView';
+            } // addReferralAgencyForm
 
+            controller.editReferralAgencyForm = function (agency) {
+                controller.agency = clone(agency);
+                controller.reviewdateopen = false;
+                controller.view = 'editReferralAgency';
+                controller.buttonView = 'cancelToView';
+            } // editReferralAgencyForm
 
+            controller.addNewReferralAgency = function (org, agency) {
+                dataService.addNewReferralAgency(org, agency, pd()).then(controller.updateAgency, errorHandler);
+            } // addNewReferralAgency
+
+            controller.updateReferralAgency = function (org, agency) {
+                dataService.updateReferralAgency(org, agency, pd()).then(controller.updateAgency, errorHandler);
+            } // updateReferralAgency
+
+            controller.deleteReferralAgency = function (org, staff) {
+                _dialogBox('confirmDialog.html',
+                            "Delete Referral Agency",
+                            "Are you sure you want to delete this agency?",
+                            function (note) {
+                                controller.message = "Deleting ...";
+                                dataService.deleteReferralAgency(org, staff).then(controller.updateAgency, errorHandler);
+                            });
+            } // deleteReferralAgency
 
             function pd() {
                 return restrictToProject ? controller.currentProject : null;

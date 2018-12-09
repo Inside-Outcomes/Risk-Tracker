@@ -8,7 +8,21 @@
                 <span class="icon-bar"></span>
             </button>
             <ng-include src="'app/views/common/navbar_header.html'"></ng-include>
+
             <div class="collapse navbar-collapse" data-collapse="isCollapsed">
+                <ul class="nav navbar-nav">
+                    <li>&nbsp;</li>
+                    <li class="dropdown" dropdown>
+                        <a class="dropdown-toggle" dropdown-toggle>
+                            {{ controller.currentProject != null ? controller.currentProject.name : 'Choose Project' }}
+                            <i class="caret" ng-show="controller.allProjects.length > 1"></i>
+                        </a>
+                        <ul class="dropdown-menu ng-hide" ng-show="controller.allProjects.length > 1">
+                            <li ng-repeat="proj in controller.allProjects"><a data-ng-click="controller.selectProject(proj)">{{proj.name}}</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
                 <ng-include src="'app/views/common/logout_button.html'"></ng-include>
             </div>
         </div>
@@ -21,7 +35,12 @@
             {{controller.message}}
         </p>
 
-        <ng-include src="'app/views/advisor/triage.html'">
+        <div ng-switch-when="chooseproject">
+            <ng-include src="'app/views/advisor/projectChooser.html'">
+        </div>
+        <div ng-switch-default>
+            <ng-include src="'app/views/advisor/triage.html'">
+        </div>
      </div>
   </div>
 </div>

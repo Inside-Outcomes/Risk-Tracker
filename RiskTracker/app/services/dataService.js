@@ -39,6 +39,11 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
         return uriAction('Risk', arguments);
     } // riskAction
 
+    var outcomeFrameworksUri = serviceBase + 'api/OutcomeFrameworks';
+    var outcomeFrameworkAction = function () {
+        return uriAction('OutcomeFramework', arguments);
+    } // outcomeFrameworkAction
+
     var reportAction = function () {
         return uriAction('Report', arguments);
     } // reportAction
@@ -190,6 +195,10 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
     var _fetchOrgDetails = function (orgData) {
         return _get(orgAction(orgData.id));
     } // _loadOrgDetails
+    var _exportolump = function (orgData) {
+        return _get(uriAction('Exportolump', [orgData.id]));
+    } // _exportolump
+
     var _listStaff = function (orgData, projData) {
         if (projData)
             return _get(orgAction(orgData.id, 'StaffMembers', projData.id));
@@ -236,6 +245,27 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
         return _delete(orgAction(orgData.id, 'Location', location.id));
     } // _deleteLocation
 
+    var _listReferralAgencies = function (orgData, projData) {
+        if (projData)
+            return _get(orgAction(orgData.id, 'ReferralAgencies', projData.id));
+        return _get(orgAction(orgData.id, 'ReferralAgencies'));
+    }
+    var _addNewReferralAgency = function (orgData, newReferralAgency, projData) {
+        if (projData)
+            return _post(orgAction(orgData.id, 'AddReferralAgency', projData.id), newReferralAgency);
+        return _post(orgAction(orgData.id, 'AddReferralAgency'), newReferralAgency);
+    } // _addNewReferralAgency
+    var _updateReferralAgency = function (orgData, referralAgency, projData) {
+        if (projData)
+            return _put(orgAction(orgData.id, 'ReferralAgency', projData.id, referralAgency.id, 'Update'), referralAgency);
+        return _put(orgAction(orgData.id, 'ReferralAgency', referralAgency.id, 'Update'), referralAgency);
+    } // _updateReferralAgency
+    var _deleteReferralAgency = function (orgData, referralAgency, projData) {
+        if (projData)
+            return _delete(orgAction(orgData.id, 'ReferralAgency', projData.id, referralAgency.id));
+        return _delete(orgAction(orgData.id, 'ReferralAgency', referralAgency.id));
+    } // _deleteReferralAgency
+
     /////////////////////////////////////////////////
     var _listRiskMaps = function (orgData) {
         if (orgData)
@@ -243,19 +273,21 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
         return _get(riskMapsUri);
     } // _listRiskMaps
 
-    var _fetchRiskMap = function (name) {
-        return _get(riskMapAction(name));
+    var _fetchRiskMap = function (id) {
+        return _get(riskMapAction(id));
     } // _fetchRiskMap
 
     var _updateRiskMap = function (riskMap) {
-        return _put(riskMapAction(riskMap.name), riskMap);
+        return _put(riskMapAction(riskMap.id), riskMap);
     } // _fetchRiskMap
 
     var _createRiskMap = function (riskMap) {
         return _post(riskMapsUri, riskMap);
     } // _createRiskMap
 
-    var _listRisks = function () {
+    var _listRisks = function (orgData) {
+        if (orgData)
+            return _get(orgAction(orgData.id, 'Risks'));
         return _get(risksUri);
     } // _listRisks
 
@@ -270,6 +302,24 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
     var _createRisk = function (risk) {
         return _post(risksUri, risk);
     } // _createRisk
+
+    var _deleteRisk = function (risk) {
+        return _delete(riskAction(risk.id));
+    } // _deleteRisk
+
+    var _listOutcomeFrameworks = function (orgData) {
+        if (orgData)
+            return _get(orgAction(orgData.id, 'OutcomeFrameworks'));
+        return _get(outcomeFrameworksUri);
+    } // _listOutcomeFrameworks
+
+    var _createOutcomeFramework = function (framework) {
+        return _post(outcomeFrameworksUri, framework);
+    } // _createOutcomeFramework
+
+    var _updateOutcomeFramework = function (framework) {
+        return _put(outcomeFrameworkAction(framework.id), framework);
+    } // _updateOutcomeFramework
 
     /////////////////////////////////////////////////
     var _loadReport = function (org, project, location, name, startDate, endDate, field) {
@@ -338,23 +388,33 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
     dataServiceFactory.suspendOrganisation = _suspendOrganisation;
     dataServiceFactory.activateOrganisation = _activateOrganisation;
     dataServiceFactory.fetchOrgDetails = _fetchOrgDetails;
+    dataServiceFactory.exportolump = _exportolump;
+
     dataServiceFactory.listProjects = _listProjects;
     dataServiceFactory.addNewProject = _addNewProject;
     dataServiceFactory.updateProject = _updateProject;
     dataServiceFactory.canDeleteProject = _canDeleteProject;
     dataServiceFactory.deleteProject = _deleteProject;
+
     dataServiceFactory.addProjectQuestion = _addProjectQuestion;
     dataServiceFactory.updateProjectQuestion = _updateProjectQuestion;
+
     dataServiceFactory.listStaff = _listStaff;
     dataServiceFactory.addNewStaffMember = _addNewStaffMember;
     dataServiceFactory.updateStaffMember = _updateStaffMember;
     dataServiceFactory.updateStaffPassword = _updateStaffPassword;
     dataServiceFactory.deleteStaffMember = _deleteStaffMember;
+
     dataServiceFactory.listLocations = _listLocations;
     dataServiceFactory.addNewLocation = _addNewLocation;
     dataServiceFactory.updateLocation = _updateLocation;
     dataServiceFactory.canDeleteLocation = _canDeleteLocation;
     dataServiceFactory.deleteLocation = _deleteLocation;
+
+    dataServiceFactory.listReferralAgencies = _listReferralAgencies;
+    dataServiceFactory.addNewReferralAgency = _addNewReferralAgency;
+    dataServiceFactory.updateReferralAgency = _updateReferralAgency;
+    dataServiceFactory.deleteReferralAgency = _deleteReferralAgency;
 
     dataServiceFactory.listRiskMaps = _listRiskMaps;
     dataServiceFactory.fetchRiskMap = _fetchRiskMap;
@@ -365,6 +425,11 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
     dataServiceFactory.fetchRisk = _fetchRisk;
     dataServiceFactory.updateRisk = _updateRisk;
     dataServiceFactory.createRisk = _createRisk;
+    dataServiceFactory.deleteRisk = _deleteRisk;
+
+    dataServiceFactory.listOutcomeFrameworks = _listOutcomeFrameworks;
+    dataServiceFactory.createOutcomeFramework = _createOutcomeFramework;
+    dataServiceFactory.updateOutcomeFramework = _updateOutcomeFramework;
 
     dataServiceFactory.loadReport = _loadReport;
     dataServiceFactory.loadReportFields = _loadReportFields;

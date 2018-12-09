@@ -177,3 +177,9 @@ textarea {
 .form-control:focus {
     border-color: #d1bcd1;
 }
+
+@media print {
+    .btn, .noprint, .modal {
+        visibility: hidden;
+    }
+}

@@ -8,7 +8,7 @@ app.controller('supervisorController',
 
   clientController.setup(advisor, dataService, $modal, localStorageService, Upload, $scope);
 
-  orgController.setup(advisor, dataService, $modal);
+  orgController.setup(advisor, dataService, $modal, $routeParams);
 
   reportsController.setup(advisor, dataService);
 

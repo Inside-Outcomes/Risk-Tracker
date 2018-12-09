@@ -27,10 +27,9 @@
                         <ul class="dropdown-menu">
                             <li><a ng-click="controller.addProjectForm(controller.organisation)">Add Project</a></li>
                             <li><a ng-click="controller.addStaffForm(controller.organisation)">Add Staff Member</a></li>
-                            <li><a ng-click="controller.addLocationForm(controller.organisation)">Add Location</a></li>
+                            <li><a ng-click="controller.addReferralAgencyForm(controller.organisation)">Add Referral Agency</a></li>
                         </ul>
                     </li>
-                    <li ng-switch-when="viewOrg"><button class="btn btn-primary navbar-btn" ng-click="controller.loadClientList()">Clients</button></li>
                     <li ng-switch-when="viewOrg"><button class="btn btn-primary navbar-btn" ng-click="controller.showReports()">Reports</button></li>
                     <li ng-switch-when="viewOrg">&nbsp;</li>
                     <li ng-switch-when="viewOrg"><button class="btn btn-warning navbar-btn" ng-click="controller.closeOrg()"><i class="glyphicon glyphicon-eject"></i> Close</button></li>
@@ -51,26 +50,26 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12" ng-switch="controller.view">
-        <p data-ng-show="controller.message != ''" class="alert alert-danger ng-hide">
-            {{controller.message}}
-        </p>
+      <div class="col-md-12" ng-switch="controller.view">
+          <p data-ng-show="controller.message != ''" class="alert alert-danger ng-hide">
+              {{controller.message}}
+          </p>
 
-        <div ng-switch-when="home"><ng-include src="'app/views/admin/orglist.html'"></ng-include></div>
-        <div ng-switch-when="newOrg"><ng-include src="'app/views/admin/neworg.html'"></ng-include></div>   
-        <div ng-switch-when="viewOrg"><ng-include src="'app/views/admin/vieworg.html'"></ng-include></div>
-        <div ng-switch-when="clientlist"><client-list controller="controller" clients="controller.clientList"></client-list></div>
-        <div ng-switch-when="newclient"><ng-include src="'app/views/common/newclient.html'"></ng-include></div>
-        <div ng-switch-when="client"><ng-include src="'app/views/common/client.html'"></ng-include></div>
-        <div ng-switch-when="editOrg"><ng-include src="'app/views/admin/editorg.html'"></ng-include></div>
-        <div ng-switch-when="newProject"><ng-include src="'app/views/admin/newproject.html'"></ng-include></div>
-        <div ng-switch-when="editProject"><ng-include src="'app/views/admin/editproject.html'"></ng-include></div>
-        <div ng-switch-when="newStaff"><ng-include src="'app/views/admin/newstaff.html'"></ng-include></div>
-        <div ng-switch-when="editStaff"><ng-include src="'app/views/admin/editstaff.html'"></ng-include></div>
-        <div ng-switch-when="newLocation"><ng-include src="'app/views/admin/newlocation.html'"></ng-include></div>
-        <div ng-switch-when="editLocation"><ng-include src="'app/views/admin/editlocation.html'"></ng-include></div>
-        <div ng-switch-when="reports"><ng-include src="'app/views/reports/reportpicker.html'"></ng-include></div>
-    </div>
+          <div ng-switch-when="home"><ng-include src="'app/views/admin/orglist.html'"></ng-include></div>
+          <div ng-switch-when="newOrg"><ng-include src="'app/views/admin/neworg.html'"></ng-include></div>
+          <div ng-switch-when="viewOrg"><ng-include src="'app/views/admin/vieworg.html'"></ng-include></div>
+          <div ng-switch-when="clientlist"><client-list controller="controller" clients="controller.clientList"></client-list></div>
+          <div ng-switch-when="newclient"><ng-include src="'app/views/common/newclient.html'"></ng-include></div>
+          <div ng-switch-when="client"><ng-include src="'app/views/common/client.html'"></ng-include></div>
+          <div ng-switch-when="editOrg"><ng-include src="'app/views/admin/editorg.html'"></ng-include></div>
+          <div ng-switch-when="newProject"><ng-include src="'app/views/admin/newproject.html'"></ng-include></div>
+          <div ng-switch-when="editProject"><ng-include src="'app/views/admin/editproject.html'"></ng-include></div>
+          <div ng-switch-when="newStaff"><ng-include src="'app/views/admin/newstaff.html'"></ng-include></div>
+          <div ng-switch-when="editStaff"><ng-include src="'app/views/admin/editstaff.html'"></ng-include></div>
+          <div ng-switch-when="newReferralAgency"><ng-include src="'app/views/admin/newreferralagency.html'"></ng-include></div>
+          <div ng-switch-when="editReferralAgency"><ng-include src="'app/views/admin/editreferralagency.html'"></ng-include></div>
+          <div ng-switch-when="reports"><ng-include src="'app/views/reports/reportpicker.html'"></ng-include></div>
+      </div>
   </div>
 </div>
 

@@ -58,7 +58,7 @@
             </div>
         </div>
     </tab>
-   <tab heading="Risk Map">
+    <tab heading="Risk Map">
         <div class="row">
         <div class="col-md-12">
             <span class="pull-right"><input type="checkbox" ng-checked="controller.showGuidance()" ng-click="controller.toggleGuidance()"/> Show Guidance</span>
@@ -98,6 +98,31 @@
             </div>
             &nbsp;
         </div>
+        </div>
+    </tab>
+    <tab heading="Referral Agencies">
+        <div ng-repeat="referral in controller.currentClient.referrals">
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>{{ referral.risk.title }}</strong>
+                </div>
+
+                <div class="col-md-6">
+                    <div ng-repeat="agency in referral.agencies">
+                        <p>
+                            <strong>{{agency.name}}</strong>
+                            <span ng-if="agency.description"><br /> {{agency.description}}</span>
+                            <span ng-if="agency.address.phoneNumber"><br /><strong>Phone number</strong> : {{ agency.address.phoneNumber }}</span>
+                            <span ng-if="agency.address.email"><br /><strong>Email</strong> : <a href="mailto:{{ agency.address.email }}">{{ agency.address.email }}</a></span>
+                            <span ng-if="agency.address.website"><br /><strong>Website</strong> : <a href="{{ agency.address.website }}">{{ agency.address.website }}</a></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">&nbsp;</div>
+                <div class="col-md-4"><hr /></div>
+            </div>
         </div>
     </tab>
     <tab heading="Questions" ng-show="controller.currentClient.questions">

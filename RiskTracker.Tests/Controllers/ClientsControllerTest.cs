@@ -15,27 +15,27 @@ namespace RiskTracker.Tests.Controllers {
 
     private ClientsController controller_ = new ClientsController();
 
-    [ClassInitialize]
-    public static void DataSetup(TestContext tc) {
-      RiskTracker.DataConfig.InitialData();
-    } // DataSetup
-
     [TestMethod]
     public void add_note_to_client() {
-      var client = createClient();
+      var client = createClient(project());
 
       Assert.AreEqual(1, client.Timeline.Count);
 
       client = addClientNote(client, "Here's a note!");
 
       Assert.AreEqual(1, client.Timeline.Count);
-      Assert.AreEqual("Here's a note!\nClient registered", client.Timeline[0].Notes);
+      var notes = client.Timeline[0].Notes;
+      Assert.AreEqual("Here's a note!", notes[0].Text);
+      Assert.AreEqual("Client registered", notes[1].Text);
 
       Thread.Sleep(100);
 
       client = addClientNote(client, "Second note");
+      notes = client.Timeline[0].Notes;
       Assert.AreEqual(1, client.Timeline.Count);
-      Assert.AreEqual("Second note\nHere's a note!\nClient registered", client.Timeline[0].Notes);
+      Assert.AreEqual("Second note", notes[0].Text);
+      Assert.AreEqual("Here's a note!", notes[1].Text);
+      Assert.AreEqual("Client registered", notes[2].Text);
     } // AddNote
 
     /////////////////////////////
@@ -43,8 +43,8 @@ namespace RiskTracker.Tests.Controllers {
       return controller_.GetClients().Count();
     } // clientCount
 
-    protected override Client createClient() {
-      var actionResult = controller_.PostClient(TestHelper.testClient());
+    protected override Client createClient(Project project) {
+      var actionResult = controller_.PostClient(TestHelper.testClient(project));
       return decodeActionResult<Client>(actionResult);
     } // createClient
 

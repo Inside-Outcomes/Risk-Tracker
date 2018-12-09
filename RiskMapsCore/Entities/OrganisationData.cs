@@ -96,5 +96,8 @@ namespace RiskTracker.Entities {
     public List<ProjectData> Projects { get; set; }
     public List<StaffMemberData> Staff { get; set; }
     public List<LocationData> Locations { get; set; }
+    public List<ReferralAgencyData> ReferralAgencies { get; set; }
+
+    public string Application { get; set; }
   } // ProjectOrganisation
 } // RiskTracker.Entities

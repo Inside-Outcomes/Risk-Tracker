@@ -23,10 +23,10 @@ app.controller('indexController',
         $location.path('/profile');
     }
 
-    index.showAdvisor = false; //authService.authentication.isAdvisor() && authService.authentication.multiRole();
-    index.showCoordinator = false; //authService.authentication.isCoordinator() && authService.authentication.multiRole();
-    index.showSupervisor = false; //authService.authentication.isSupervisor() && authService.authentication.multiRole();
-    index.showDivider = false; //authService.authentication.multiRole();
+    index.showAdvisor = authService.authentication.isAdvisor() && authService.authentication.multiRole();
+    index.showCoordinator = authService.authentication.isCoordinator() && authService.authentication.multiRole();
+    index.showSupervisor = authService.authentication.isSupervisor() && authService.authentication.multiRole();
+    index.showDivider = authService.authentication.multiRole();
 
     index.isAuth = authService.authentication.isAuth;
     index.userName = authService.authentication.userName;

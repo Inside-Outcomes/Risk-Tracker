@@ -75,6 +75,37 @@ app.run(['authService', function (authService) {
     authService.fillAuthData();
 }]);
 
+var cacheBustBaseUrl = 'app/views';
+var cacheBustParam = 'v=' + ~~(Date.now() / 60000);
+
+function getTimeVersionedUrl(url) {
+    // only do for html templates of this app
+    // NOTE: the path to test for is app dependent!
+    if (!url || url.indexOf(cacheBustBaseUrl) < 0 || url.indexOf('.html') < 0) return url;
+    // create a URL param that changes every minute
+    // and add it intelligently to the template's previous url
+    if (url.indexOf('?') > 0) {
+        if (url.indexOf('v=') > 0)
+            return url.replace(/v=([0-9]*)/, cacheBustParam);
+        return url + '&' + cacheBustParam;
+    }
+    return url + '?' + cacheBustParam;
+}
+
+// this defeats Angular's $templateCache on a 1-minute interval
+// as a side-effect it also defeats HTTP (browser) caching
+app.config(function ($httpProvider) {
+    $httpProvider.interceptors.push(function () {
+        return {
+            'request': function (config) {
+                config.url = getTimeVersionedUrl(config.url);
+                return config;
+            }
+        };
+    });
+});
+
+
 app.filter('nl2br', ['$sce', function ($sce) {
     return function (msg, is_xhtml) {
         var is_xhtml = is_xhtml || false;

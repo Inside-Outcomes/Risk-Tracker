@@ -1,0 +1,10 @@
+﻿<div class="row">
+    <div class="col-md-10"></div>
+    <div class="col-md-2">
+        <a class="btn btn-info btn-sm pull-right"
+           ng-click="controller.updateOutcomeFramework(controller.frameworkToEdit)"
+           ng-disabled="!controller.frameworkToEdit.title">Update Framework</a>
+    </div>
+</div>
+
+<ng-include src="'app/views/admin/outcomeframeworkcoreform.html'"></ng-include>

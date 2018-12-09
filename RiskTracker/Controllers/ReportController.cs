@@ -45,9 +45,11 @@ namespace RiskTracker.Controllers {
         DateTime? startDate = grabStartDate();
         DateTime? endDate = grabEndDate();
 
-        string reportCSV = ResolutionReport.buildCSV(orgId, projId, locId, startDate, endDate);
-
-        return csvData(reportCSV, "resolution.csv");
+        var response = csvStream("resolution.csv", new PushStreamContent((stream, content, context) => {
+          var writer = new StreamWriter(stream);
+          ResolutionReport.buildCSV(writer, orgId, projId, locId, startDate, endDate);
+        }));
+        return response;
       } // resolutionReport
 
       /// ///////////////////////////
@@ -74,7 +76,7 @@ namespace RiskTracker.Controllers {
       [Route("api/Report/{orgId:guid}/{projId:guid}/pcprogresscsv")]
       [HttpGet]
       public HttpResponseMessage progressReportCSV(Guid orgId, Guid projId) {
-        return progressReportCSV(orgId, projId);
+        return progressReportCSV(orgId, projId, null);
       } // progressReportCSV
 
       [Route("api/Report/{orgId:guid}/{projId:guid}/{locId:guid}/pcprogresscsv")]
@@ -83,9 +85,12 @@ namespace RiskTracker.Controllers {
         DateTime? startDate = grabStartDate();
         DateTime? endDate = grabEndDate();
 
-        string reportCSV = ProgressReport.buildCSV(orgId, projId, locId, startDate, endDate);
+        var response = csvStream("progress.csv", new PushStreamContent((stream, Content, context) => {
+          var writer = new StreamWriter(stream);
+          ProgressReport.buildCSV(writer, orgId, projId, locId, startDate, endDate);
+        }));
 
-        return csvData(reportCSV, "progress.csv");
+        return response;
       } // progressReportCSV
 
       /// ///////////////////////////
@@ -117,9 +122,13 @@ namespace RiskTracker.Controllers {
       [HttpGet]
       public HttpResponseMessage actionRequiredCSV(Guid orgId, Guid projId, Guid? locId) {
         DateTime? startDate = grabStartDate(DateTime.Now.AddDays(-14));
-        string reportCSV = ActionRequired.buildCSV(orgId, projId, locId, startDate.Value);
 
-        return csvData(reportCSV, "activity.csv");
+        var response = csvStream("actionrequired.csv", new PushStreamContent((stream, Content, context) => {
+          var writer = new StreamWriter(stream);
+          ActionRequired.buildCSV(writer, orgId, projId, locId, startDate.Value);
+        }));
+
+        return response;
       } // actionRequiredcsv
 
       /// ///////////////////////////
@@ -155,8 +164,12 @@ namespace RiskTracker.Controllers {
         DateTime? startDate = grabStartDate();
         DateTime? endDate = grabEndDate();
 
-        string reportCSV = ActivityReport.buildCSV(orgId, projId, locId, startDate, endDate);
-        return csvData(reportCSV, "activity.csv");
+        var response = csvStream("activity.csv", new PushStreamContent((stream, Content, context) => {
+          var writer = new StreamWriter(stream);
+          ActivityReport.buildCSV(writer, orgId, projId, locId, startDate, endDate);
+        }));
+
+        return response;
       } // actionRequiredcsv
 
       /// ///////////////////////////
@@ -178,8 +191,12 @@ namespace RiskTracker.Controllers {
         DateTime? startDate = grabStartDate();
         DateTime? endDate = grabEndDate();
 
-        string reportCSV = OpenDataReport.buildCSV(orgId, projId, startDate, endDate);
-        return csvData(reportCSV, "areareport.csv");
+        var response = csvStream("opendata.csv", new PushStreamContent((stream, Content, context) => {
+          var writer = new StreamWriter(stream);
+          OpenDataReport.buildCSV(writer, orgId, projId, startDate, endDate);
+        }));
+
+        return response;
       } // areaReportCSV
 
       /// ///////////////////////////
@@ -230,8 +247,12 @@ namespace RiskTracker.Controllers {
         var requestQuery = Request.GetQueryNameValuePairs().ToDictionary((key) => key.Key, (value) => value.Value);
         var field = requestQuery["field"];
 
-        string reportCSV = AdhocReport.buildCSV(orgId, projId, locId, field, startDate, endDate);
-        return csvData(reportCSV, "adhocReport.csv");
+        var response = csvStream("adhocReport.csv", new PushStreamContent((stream, Content, context) => {
+          var writer = new StreamWriter(stream);
+          AdhocReport.buildCSV(writer, orgId, projId, locId, field, startDate, endDate);
+        }));
+
+        return response;
       } // adhocReportCSV
 
       /// ///////////////////////////
@@ -268,7 +289,12 @@ namespace RiskTracker.Controllers {
         DateTime? startDate = grabStartDate();
         DateTime? endDate = grabEndDate();
 
-        return csvData(CommissionersReport.buildCSV(orgId, projId, locId, startDate, endDate), "commissionersReport.csv");
+        var response = csvStream("commionersReport.csv", new PushStreamContent((stream, Content, context) => {
+          var writer = new StreamWriter(stream);
+          CommissionersReport.buildCSV(writer, orgId, projId, locId, startDate, endDate);
+        }));
+
+        return response;
       } // commissionersReportCsv
 
       /// ///////////////////////////
@@ -303,7 +329,13 @@ namespace RiskTracker.Controllers {
       [HttpGet]
       public HttpResponseMessage auditReportCsv(Guid orgId, Guid projId, Guid? locId) {
         DateTime startDate = grabStartDate().Value;
-        return csvData(AuditReport.buildCSV(orgId, projId, locId, startDate), "auditReport.csv");
+
+        var response = csvStream("auditReport.csv", new PushStreamContent((stream, Content, context) => {
+          var writer = new StreamWriter(stream);
+          AuditReport.buildCSV(writer, orgId, projId, locId, startDate);
+        }));
+
+        return response;
       } // auditReportCsv
 
       /// ///////////////////////////
@@ -339,7 +371,11 @@ namespace RiskTracker.Controllers {
         DateTime? startDate = grabStartDate();
         DateTime? endDate = grabEndDate();
 
-        return csvData(ExportReport.buildCSV(orgId, projId, locId, startDate, endDate), "export.csv");
+        var response = csvStream("export.csv", new PushStreamContent((stream, content, context) => {
+          var writer = new StreamWriter(stream);
+          ExportReport.buildCSV(writer, orgId, projId, locId, startDate, endDate);
+        }));
+        return response; // csvData(ExportReport.buildCSV(orgId, projId, locId, startDate, endDate), "export.csv");
       } // exportReportCsv
       /// ///////////////////////////
       /// ///////////////////////////
@@ -350,6 +386,14 @@ namespace RiskTracker.Controllers {
         csvFile.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment") { FileName = name };
         return csvFile;
       }
+
+      private HttpResponseMessage csvStream(string name, HttpContent content) {
+        HttpResponseMessage csvFile = new HttpResponseMessage(HttpStatusCode.OK);
+        csvFile.Content = content;
+        csvFile.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/csv");
+        csvFile.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment") { FileName = name };
+        return csvFile;
+      } // csvStream
 
       private DateTime? grabStartDate() { return grabStartDate(null); }
       private DateTime? grabStartDate(DateTime? defaultDate) {

@@ -4,11 +4,6 @@
     </div>
     <div class="col-md-4 riskTheme" ng-repeat="theme in controller.riskAssessment">
         <h4>{{ theme.title }}</h4>
-        <div class="riskScores">
-            <table>
-                <tr><td>Current Score :</td><td>&nbsp;</td><td><strong>{{ theme.score }}</strong></td></tr>
-             </table>
-        </div>
         <div class="riskCategory" ng-repeat="category in theme.categories">
             <strong>{{ category.title }}</strong>
             <div class="riskRisk" ng-repeat="risk in category.risks" ng-class="risk.status">

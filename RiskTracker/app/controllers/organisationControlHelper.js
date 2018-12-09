@@ -3,7 +3,8 @@ var orgController = (function () {
     var _setupOrgController =
         function (controller,
                   dataService,
-                  $modal) {
+                  $modal,
+                  $routeParams) {
             controller.roles = ['advisor', 'coordinator', 'supervisor'];
             controller.message = "";
             controller.view = 'home';
@@ -54,6 +55,12 @@ var orgController = (function () {
                 controller.allStaff = results.data;
             } // updateStaff
 
+            controller.updateAgency = function (results) {
+                controller.viewReferralAgency = true;
+                controller.viewOrg();
+                controller.allReferralAgencies = results.data;
+            }
+
             controller.viewOrg = function () {
                 controller.message = "";
                 controller.view = 'viewOrg';
@@ -66,6 +73,8 @@ var orgController = (function () {
                 controller.allStaff = [];
                 controller.allLocations = [];
                 controller.allRiskmaps = [];
+                controller.allReferralAgencies = [];
+                controller.allRisks = [];
                 dataService.listProjects(org).then(
                     function (results) {
                         controller.allProjects = results.data;
@@ -86,11 +95,29 @@ var orgController = (function () {
                         controller.allRiskmaps = results.data;
                     }
                 );
+                dataService.listRisks(org).then(
+                    function (results) {
+                        controller.allRisks = results.data;
+                    }
+                );
+                dataService.listReferralAgencies(org).then(
+                    function (results) {
+                        controller.allReferralAgencies = results.data;
+                        if ($routeParams.subview == 'agency' && $routeParams.guid != null) {
+                            for (var a in controller.allReferralAgencies) 
+                                if (results.data[a].id == $routeParams.guid) {
+                                    controller.editReferralAgencyForm(results.data[a]);
+                                    return;
+                                }
+                        }
+                    }
+                );
             } // loadOrg
 
             controller.loadAndViewOrg = function (org) {
                 controller.loadOrg(org);
-                controller.viewOrg();
+                if ($routeParams.subview == null) 
+                    controller.viewOrg();
             } // loadAndViewOrg
 
             controller.editOrg = function (org) {
@@ -145,6 +172,51 @@ var orgController = (function () {
                     controller.location.projectIds.push(projId);
             } // toggleLocationProject
 
+            controller.toggleAgencyRisk = function (riskId) {
+                var index = controller.agency.associatedRiskIds.indexOf(riskId);
+                if (index > -1)
+                    controller.agency.associatedRiskIds.splice(index, 1);
+                else
+                    controller.agency.associatedRiskIds.push(riskId);
+            } // toggleAgencyRisk
+
+            controller.riskThemes = function () {
+                var themes = [];
+                for (var i = 0; i != controller.allRisks.length; ++i) {
+                    var r = controller.allRisks[i];
+                    if (themes.some(function (e) { return e == r.theme; }))
+                        continue;
+                    themes.push(r.theme);
+                } // for ...
+                return themes;
+            } // riskThemes
+
+            controller.riskThemeCategories = function (theme) {
+                var cats = [];
+                for (var i = 0; i != controller.allRisks.length; ++i) {
+                    var r = controller.allRisks[i];
+                    if (theme !== r.theme)
+                        continue;
+                    if (cats.some(function (e) { return e == r.category; }))
+                        continue;
+                    cats.push(r.category);
+                } // for ...
+                return cats;
+            } // riskThemeCategories
+
+            controller.risks = function (theme, category) {
+                var risks = [];
+                for (var i = 0; i != controller.allRisks.length; ++i) {
+                    var r = controller.allRisks[i];
+                    if (theme !== r.theme)
+                        continue;
+                    if (category !== r.category)
+                        continue;
+                    risks.push(r);
+                } // for ...
+                return risks;
+            } // risks
+
             var updateProjectData = function (results) {
                 controller.message = "";
                 controller.viewOrg();
@@ -170,6 +242,13 @@ var orgController = (function () {
                                 dataService.deleteProject(org, staff).then(updateProjectData, errorHandler);
                             });
             } // deleteProject
+
+            controller.openRenewalDatePicker = function ($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+
+                controller.reviewdateopen = !controller.reviewdateopen;
+            };
 
             function clone(obj) {
                 if (obj == null || typeof (obj) != 'object')

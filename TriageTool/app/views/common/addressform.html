@@ -1,6 +1,8 @@
 ﻿<h3 class="ng-hide" ng-show="!notitle">Address details</h3>
-<textarea placeholder="Address" data-ng-model="address.details" rows="4" cols="*" class="form-control"></textarea>
+<textarea ng-hide="summary" placeholder="Address" data-ng-model="address.details" rows="4" cols="*" class="form-control"></textarea>
 <input placeholder="Post Code" data-ng-model="address.postCode" type="text" class="form-control">
 <input placeholder="Phone number" data-ng-model="address.phoneNumber" type="text" class="form-control">
-<input placeholder="Email" data-ng-model="address.email" type="text" class="form-control" required>
+<input placeholder="Email" data-ng-model="address.email" type="text" class="form-control">
+<small ng-show="disclaimer" class="pull-right">The email address, if provided, will be used to email the client a copy of the referral report. 
+    <br/> It will not be used for any other purpose.</small>
 <input placeholder="Website" data-ng-model="address.website" type="text" class="form-control ng-hide" ng-show="!nowebsite">

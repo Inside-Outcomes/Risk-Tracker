@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Configuration;
 using RiskTracker.Models;
 
 namespace RiskTracker.Entities {
@@ -10,6 +11,8 @@ namespace RiskTracker.Entities {
     public int Count {
       get { return context.ProjectOrganisations.Count(); }
     } // Count
+
+    private readonly string ApplicationName = ConfigurationManager.AppSettings["ApplicationName"];
 
     public static ProjectOrganisationData findOrg(Guid orgId) {
       ProjectOrganisationRepository repo = new ProjectOrganisationRepository();
@@ -23,6 +26,7 @@ namespace RiskTracker.Entities {
     private ProjectOrganisationData POD(Expression<Func<ProjectOrganisationData, bool>> where) {
       ProjectOrganisationData pod = 
         context.ProjectOrganisations.
+                Where(p => p.Application == ApplicationName).
                 Where(where).
                 Include(p => p.Details).
                 Include(p => p.Details.Address).
@@ -31,9 +35,11 @@ namespace RiskTracker.Entities {
                 Include(p => p.Projects.Select(pj => pj.Questions)).
                 Include(p => p.Locations).
                 Include(p => p.Locations.Select(loc => loc.Address)).
+                Include(p => p.ReferralAgencies).
+                Include(p => p.ReferralAgencies.Select(ra => ra.Address)).
                 Include(p => p.Staff).
-                Single();
-      if (pod.Projects != null) 
+                SingleOrDefault();
+      if (pod != null && pod.Projects != null) 
         pod.Projects.Sort(ProjectCompareByName);
       return pod;
     } // POD
@@ -51,9 +57,16 @@ namespace RiskTracker.Entities {
       return pod != null ? new ProjectOrganisation(pod) : null;
     } // Get
 
+    public ProjectOrganisation GetByStaffMember(string userName) {
+      var pod  = POD(p => p.Staff.Any(s => s.UserName == userName));
+      return pod != null ? new ProjectOrganisation(pod) : null;
+    } // findOrgByStaffMember
+
     public IList<ProjectOrganisation> AllOrganisations() {
       var all = new List<ProjectOrganisation>();
-      var pOrgs = context.ProjectOrganisations.Include(p => p.Details).
+      var pOrgs = context.ProjectOrganisations.
+                Where(p => p.Application == ApplicationName).
+                Include(p => p.Details).
                 Include(p => p.Details.Address).
                 Include(p => p.Projects).
                 Include(p => p.Projects.Select(pj => pj.Address)).
@@ -70,6 +83,7 @@ namespace RiskTracker.Entities {
 
     public ProjectOrganisation Create(Organisation org) {
       ProjectOrganisationData pod = new ProjectOrganisationData();
+      pod.Application = ApplicationName;
       pod.Details = org.organisation();
       pod.Id = Guid.NewGuid();
       pod.Details.Id = Guid.NewGuid();
@@ -162,6 +176,7 @@ namespace RiskTracker.Entities {
         var proj = pod.Projects.Find(p => p.Id == projId);
         pod.Projects.Remove(proj);
         Commit(pod);
+        Delete(proj);
       }
       return FetchProjects(orgId);
     } // DeleteProjects
@@ -214,6 +229,10 @@ namespace RiskTracker.Entities {
       return projects.OrderBy(p => p.Name).ToList();
     } // FetchProjects
 
+    public Project FindProject(Guid projId) {
+      var pd = context.Projects.Where(p => p.Id == projId).Include(p => p.Address).SingleOrDefault();
+      return new Project(pd);
+    }
     public Project FindProject(Guid orgId, Guid projId) {
       return FetchProjects(orgId).Where(p => p.Id == projId).First();
     } // FindProject
@@ -306,6 +325,59 @@ namespace RiskTracker.Entities {
     } // FetchStaffMembers
 
     //////////////////////
+    public IList<ReferralAgency> AddReferralAgency(Guid orgId, ReferralAgency agency) {
+      agency.Id = Guid.NewGuid();
+      agency.Address.Id = Guid.NewGuid();
+
+      var pod = POD(orgId);
+      if (pod.ReferralAgencies == null)
+        pod.ReferralAgencies = new List<ReferralAgencyData>();
+      pod.ReferralAgencies.Add(agency.referralAgencyData());
+
+      Commit(pod);
+
+      return FetchReferralAgencies(orgId);
+    } // AddReferralAgency
+
+    public IList<ReferralAgency> UpdateReferralAgency(Guid orgId, ReferralAgency agency) {
+      var pod = POD(orgId);
+      if (pod.ReferralAgencies == null)
+        throw new Exception("Organisation has no referral agencies");
+      var currentAgency = pod.ReferralAgencies.Find(p => p.Id == agency.Id);
+      if (currentAgency == null)
+        throw new Exception("Referral Agency does not belong to the organisation");
+
+      currentAgency.CopyFrom(agency.referralAgencyData());
+
+      Commit(currentAgency);
+
+      return FetchReferralAgencies(orgId);
+    } // UpdateProject
+
+    public IList<ReferralAgency> DeleteReferralAgency(Guid orgId, Guid agencyId) {
+      var pod = POD(orgId);
+      if (pod.ReferralAgencies == null)
+        throw new Exception("Organisation has no referral agencies");
+
+      var agency = pod.ReferralAgencies.Find(a => a.Id == agencyId);
+      pod.ReferralAgencies.Remove(agency);
+      
+      Commit(pod);
+      Delete(agency);
+
+      return FetchReferralAgencies(orgId);
+    } // DeleteReferralAgency
+
+    public IList<ReferralAgency> FetchReferralAgencies(Guid orgId) {
+      ProjectOrganisationData pod = POD(orgId);
+
+      if (pod.ReferralAgencies != null) 
+        return pod.ReferralAgencies.Select(rad => new ReferralAgency(rad)).OrderBy(rad => rad.Name).ToList();
+
+      return new List<ReferralAgency>();
+    } // FetchReferralAgency
+
+    //////////////////////
     public IList<Location> AddLocation(Guid orgId, Location loc) {
       loc.Id = Guid.NewGuid();
       loc.Address.Id = Guid.NewGuid();
@@ -345,7 +417,7 @@ namespace RiskTracker.Entities {
 
         return !hasClients;
       } // using ...
-    } // CanDeleteProject
+    } // CanDeleteLocation
 
     public IList<Location> DeleteLocation(Guid orgId, Guid locId) {
       if (CanDeleteLocation(orgId, locId)) {
@@ -353,9 +425,10 @@ namespace RiskTracker.Entities {
         var loc = pod.Locations.Find(l => l.Id == locId);
         pod.Locations.Remove(loc);
         Commit(pod);
+        Delete(loc);
       }
       return FetchLocations(orgId);
-    } // DeleteProjects
+    } // DeleteLocations
 
     public IList<Location> FetchLocations(Guid orgId) {
       ProjectOrganisationData pod = POD(orgId);

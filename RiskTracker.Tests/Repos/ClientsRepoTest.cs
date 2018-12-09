@@ -4,23 +4,18 @@ using RiskTracker.Models;
 using RiskTracker.Entities;
 using System.Linq;
 
-namespace RiskTracker.Tests.Controllers {
+namespace RiskTracker.Tests.Repos {
   [TestClass]
   public class ClientsRepoTest : ClientBaseTests {
     private ClientRepository repo_ = new ClientRepository();
-
-    [ClassInitialize]
-    public static void DataSetup(TestContext tc) {
-      RiskTracker.DataConfig.InitialData();
-    } // DataSetup
 
     /////////////////////////////
     protected override int clientCount() {
       return repo_.ClientCount; 
     } // clientCount
 
-    protected override Client createClient() {
-      return repo_.AddNewClient(TestHelper.testClient());
+    protected override Client createClient(Project project) {
+      return repo_.AddNewClient(TestHelper.testClient(project));
     } // createClient
     protected override Client getClient(Guid id) {
       return repo_.Client(id);

@@ -222,38 +222,55 @@ namespace RiskTracker.Controllers {
       }
     } // UpdateOrganisationProject
 
-    [Route("api/Organisation/{id:guid}/Project/{projId:guid}/Question")]
-    [ResponseType(typeof(IList<Project>))]
+    /////////////////////////////////////////////////////
+    [Route("api/Organisation/{id:guid}/ReferralAgencies")]
+    [HttpGet]
+    public IEnumerable<ReferralAgency> OrganisationReferralAgencies(Guid id) {
+      return repo_.FetchReferralAgencies(id);
+    } // OrganisationReferralAgencies
+
+    [Route("api/Organisation/{id:guid}/AddReferralAgency")]
+    [ResponseType(typeof(IList<ReferralAgency>))]
     [HttpPost]
-    public IHttpActionResult AddProjectQuestion(Guid id, Guid projId, ProjectQuestionData pqd) {
+    public IHttpActionResult AddReferralAgencyToOrganisation(Guid id, ReferralAgency agency) {
       if (!ModelState.IsValid)
         return badModelState();
 
       try {
-        var allProjects = repo_.AddProjectQuestion(id, projId, pqd);
+        var allAgencies = repo_.AddReferralAgency(id, agency);
 
-        return Ok(allProjects);
+        return Ok(allAgencies);
       } catch (Exception e) {
         return BadRequest(e.Message);
       }
-    } // AddProjectQuestion
+    } // AddReferralAgencyToOrganisation
 
-    [Route("api/Organisation/{id:guid}/Project/{projId:guid}/Question")]
+    [Route("api/Organisation/{id:guid}/ReferralAgency/{refId:guid}/Update")]
     [ResponseType(typeof(IList<Project>))]
     [HttpPut]
-    public IHttpActionResult UpdateProjectQuestion(Guid id, Guid projId, ProjectQuestionData pqd) {
+    public IHttpActionResult UpdateReferralAgency(Guid id, Guid refId, ReferralAgency ra) {
       if (!ModelState.IsValid)
         return badModelState();
 
-      try {
-        var allProjects = repo_.UpdateProjectQuestion(id, projId, pqd);
+      if (refId != ra.Id)
+        return BadRequest("Bad Referral Agency Id");
 
-        return Ok(allProjects);
+      try {
+        var allAgencies = repo_.UpdateReferralAgency(id, ra);
+
+        return Ok(allAgencies);
       } catch (Exception e) {
         return BadRequest(e.Message);
       }
-    } // AddProjectQuestion
+    } // UpdateReferralAgency
 
+    [Route("api/Organisation/{id:guid}/ReferralAgency/{refId:guid}")]
+    [ResponseType(typeof(IList<Location>))]
+    [HttpDelete]
+    public IHttpActionResult DeleteReferralAgency(Guid id, Guid refId) {
+      var allAgencies = repo_.DeleteReferralAgency(id, refId);
+      return Ok(allAgencies);
+    } // DeleteReferralAgency
 
     /////////////////////////////////////////////////////
     [Route("api/Organisation/{id:guid}/StaffMembers/{projId:guid}")]
@@ -358,6 +375,7 @@ namespace RiskTracker.Controllers {
         return BadRequest(e.Message);
       }
     } // DeleteOrganisationStaffMember
+
     /////////////////////////////////////////////////////
     [Route("api/Organisation/{id:guid}/Locations")]
     [HttpGet]
@@ -451,7 +469,7 @@ namespace RiskTracker.Controllers {
     public IHttpActionResult DeleteLocation(Guid id, Guid locationId) {
       var locations = repo_.DeleteLocation(id, locationId);
       return Ok(locations);
-    } // DeleteProject
+    } // DeleteLocation
 
     [Route("api/Organisation/{id:guid}/Location/{projId:guid}/{locationId:guid}")]
     [ResponseType(typeof(IList<Location>))]
@@ -459,16 +477,27 @@ namespace RiskTracker.Controllers {
     public IHttpActionResult DeleteLocation(Guid id, Guid projId, Guid locationId) {
       var locations = repo_.DeleteLocation(id, locationId).Where(l => l.ProjectIds.Contains(projId));
       return Ok(locations);
-    } // DeleteProject
+    } // DeleteLocation
 
     /////////////////////////////////////////////////////
     [Route("api/Organisation/{id:guid}/RiskMaps")]
     [HttpGet]
     public IEnumerable<RiskMap> OrganisationRiskMaps(Guid id) {
-      ProjectOrganisation po = repo_.Get(id);
-      RiskMapRepository rmRepo = new RiskMapRepository();
-      return rmRepo.RiskMaps().Where(rm => po.RiskMaps.Contains(rm.Id)).ToList();
-    } // OrganisationLocations
+      var rmRepo = new RiskMapRepository(id);
+      return rmRepo.RiskMaps();
+    } // OrganisationRiskMaps
+
+    [Route("api/Organisation/{id:guid}/Risks")]
+    [HttpGet]
+    public IEnumerable<Risk> OrganisationRisks(Guid id) {
+      var riskMaps = OrganisationRiskMaps(id);
+      var risks = new List<Risk>();
+      foreach (var rm in riskMaps)
+        risks.AddRange(rm.Risks());
+
+      return risks.OrderBy(r => r.Id).Distinct()
+           .OrderBy(r => r.Grouping).OrderBy(r => r.Category).OrderBy(r => r.Theme).ToList();
+    } // OrganisationRisks
 
     /////////////////////////////////////////////////////
     private IHttpActionResult badModelState() {

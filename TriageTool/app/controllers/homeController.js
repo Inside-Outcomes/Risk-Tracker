@@ -20,9 +20,9 @@ app.controller('homeController',
         if (authService.authentication.isAdmin())
             $location.path('/admin');
         else if (authService.authentication.isSupervisor())
-            $location.path('/advisor');
+            $location.path('/supervisor');
         else if (authService.authentication.isCoordinator())
-            $location.path('/advisor');
+            $location.path('/coordinator');
         else if (authService.authentication.isAdvisor())
             $location.path('/advisor');
         else if (authService.authentication.isAuth)

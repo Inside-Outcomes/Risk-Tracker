@@ -1,16 +1,27 @@
-﻿<a class="btn btn-info btn-sm pull-right" ng-click="controller.editRisk()">Edit Risk</a>
-<h3>{{ controller.currentRisk.title }}</h3>
+﻿<a ng-if="controller.isAdmin || controller.currentRisk.owningOrganisation" 
+   class="btn btn-info btn-sm pull-right" 
+   ng-click="controller.editRisk()">Edit Risk
+</a>
+<a ng-if="controller.isAdmin || controller.currentRisk.owningOrganisation"
+   class="btn btn-warning btn-sm pull-right"
+   ng-click="controller.deleteRisk(controller.currentRisk)">
+    Delete Risk
+</a>
+<h3>
+    {{ controller.currentRisk.title }}
+    <small ng-if="!controller.isAdmin && !controller.currentRisk.owningOrganisation">(System)</small>
+</h3>
 
 <table class ="table table-bordered">
     <tr><td colspan="2">{{ controller.currentRisk.guidance }}</td></tr>
     <tr><td><strong>Theme</strong></td><td>{{ controller.currentRisk.theme }}</td></tr>
     <tr><td><strong>Category</strong></td><td>{{ controller.currentRisk.category }}</td></tr>
     <tr><td><strong>Grouping</strong></td><td>{{ controller.currentRisk.grouping }}</td></tr>
-    <tr><td><strong>Score</strong></td><td>{{ controller.currentRisk.score }}</td></tr>
-    <tr><td colspan="2"><strong>Framework outcomes</strong></td></tr>
-    <tr><td><strong>NIHCEG</strong></td><td>{{ controller.currentRisk.nihceg }}</td></tr>
-    <tr><td><strong>IOST</strong></td><td>{{ controller.currentRisk.iost }}</td></tr>
-    <tr><td><strong>HCP</strong></td><td>{{ controller.currentRisk.hcp }}</td></tr>
-    <tr><td><strong>SJOF</strong></td><td>{{ controller.currentRisk.sjof }}</td></tr>
-    <tr><td><strong>ASCOF</strong></td><td>{{ controller.currentRisk.ascof }}</td></tr>
+    <tr ng-if="controller.isAdmin"><td><strong>Score</strong></td><td>{{ controller.currentRisk.score }}</td></tr>
+    <tr ng-if="controller.isAdmin"><td colspan="2"><strong>Framework outcomes</strong></td></tr>
+    <tr ng-if="controller.isAdmin"><td><strong>NIHCEG</strong></td><td>{{ controller.currentRisk.nihceg }}</td></tr>
+    <tr ng-if="controller.isAdmin"><td><strong>IOST</strong></td><td>{{ controller.currentRisk.iost }}</td></tr>
+    <tr ng-if="controller.isAdmin"><td><strong>HCP</strong></td><td>{{ controller.currentRisk.hcp }}</td></tr>
+    <tr ng-if="controller.isAdmin"><td><strong>SJOF</strong></td><td>{{ controller.currentRisk.sjof }}</td></tr>
+    <tr ng-if="controller.isAdmin"><td><strong>ASCOF</strong></td><td>{{ controller.currentRisk.ascof }}</td></tr>
 </table>

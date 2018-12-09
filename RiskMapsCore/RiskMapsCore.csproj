@@ -72,6 +72,7 @@
     <Compile Include="Entities\OrganisationData.cs" />
     <Compile Include="Entities\ProjectData.cs" />
     <Compile Include="Entities\ProjectOrganisationRepository.cs" />
+    <Compile Include="Entities\ReferralAgencyData.cs" />
     <Compile Include="Entities\RefreshToken.cs" />
     <Compile Include="Entities\RiskMap.cs" />
     <Compile Include="Entities\RiskMapRepository.cs" />
@@ -131,6 +132,50 @@
     <Compile Include="Migrations\201611211010371_ManagedRisks.Designer.cs">
       <DependentUpon>201611211010371_ManagedRisks.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612191306549_ReferralAgency.cs" />
+    <Compile Include="Migrations\201612191306549_ReferralAgency.Designer.cs">
+      <DependentUpon>201612191306549_ReferralAgency.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612201316043_AddRisksToReferralAgency.cs" />
+    <Compile Include="Migrations\201612201316043_AddRisksToReferralAgency.Designer.cs">
+      <DependentUpon>201612201316043_AddRisksToReferralAgency.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701092127081_Project_Org_Application.cs" />
+    <Compile Include="Migrations\201701092127081_Project_Org_Application.Designer.cs">
+      <DependentUpon>201701092127081_Project_Org_Application.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701101650466_Referral_Agency_Review_Date.cs" />
+    <Compile Include="Migrations\201701101650466_Referral_Agency_Review_Date.Designer.cs">
+      <DependentUpon>201701101650466_Referral_Agency_Review_Date.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701172253382_RiskMap_Owning_Org.cs" />
+    <Compile Include="Migrations\201701172253382_RiskMap_Owning_Org.Designer.cs">
+      <DependentUpon>201701172253382_RiskMap_Owning_Org.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701172341510_Risk_Owning_Org.cs" />
+    <Compile Include="Migrations\201701172341510_Risk_Owning_Org.Designer.cs">
+      <DependentUpon>201701172341510_Risk_Owning_Org.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051107015_ProjectData-add-riskmap.cs" />
+    <Compile Include="Migrations\201703051107015_ProjectData-add-riskmap.Designer.cs">
+      <DependentUpon>201703051107015_ProjectData-add-riskmap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051119103_ProjectData-remove-riskframework.cs" />
+    <Compile Include="Migrations\201703051119103_ProjectData-remove-riskframework.Designer.cs">
+      <DependentUpon>201703051119103_ProjectData-remove-riskframework.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051124313_ProjectData-rename-riskmap-riskframework.cs" />
+    <Compile Include="Migrations\201703051124313_ProjectData-rename-riskmap-riskframework.Designer.cs">
+      <DependentUpon>201703051124313_ProjectData-rename-riskmap-riskframework.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703051434338_Risk-deleted-flag.cs" />
+    <Compile Include="Migrations\201703051434338_Risk-deleted-flag.Designer.cs">
+      <DependentUpon>201703051434338_Risk-deleted-flag.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708301249408_Add_Outcome_Framework.cs" />
+    <Compile Include="Migrations\201708301249408_Add_Outcome_Framework.Designer.cs">
+      <DependentUpon>201708301249408_Add_Outcome_Framework.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\DatabaseUpdate.cs" />
     <Compile Include="Models\Advisor.cs" />
@@ -140,16 +185,63 @@
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Organisation.cs" />
     <Compile Include="Models\Project.cs" />
+    <Compile Include="Models\ReferralAgency.cs" />
     <Compile Include="Models\ReportData.cs" />
+    <Compile Include="Models\RiskMap.cs" />
     <Compile Include="Models\StaffMember.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\ActionRequired.cs" />
+    <Compile Include="Reports\ActivityReport.cs" />
+    <Compile Include="Reports\AdhocReport.cs" />
+    <Compile Include="Reports\AgencyReviewReport.cs" />
+    <Compile Include="Reports\AuditReport.cs" />
+    <Compile Include="Reports\CommissionersReport.cs" />
+    <Compile Include="Reports\ExportReport.cs" />
+    <Compile Include="Reports\OpenDataReport.cs" />
+    <Compile Include="Reports\ProgressReport.cs" />
+    <Compile Include="Reports\Reports.cs" />
+    <Compile Include="Reports\ReportsRepository.cs" />
+    <Compile Include="Reports\ResolutionReport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Migrations\201611211010371_ManagedRisks.resx">
       <DependentUpon>201611211010371_ManagedRisks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612191306549_ReferralAgency.resx">
+      <DependentUpon>201612191306549_ReferralAgency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612201316043_AddRisksToReferralAgency.resx">
+      <DependentUpon>201612201316043_AddRisksToReferralAgency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701092127081_Project_Org_Application.resx">
+      <DependentUpon>201701092127081_Project_Org_Application.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701101650466_Referral_Agency_Review_Date.resx">
+      <DependentUpon>201701101650466_Referral_Agency_Review_Date.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701172253382_RiskMap_Owning_Org.resx">
+      <DependentUpon>201701172253382_RiskMap_Owning_Org.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701172341510_Risk_Owning_Org.resx">
+      <DependentUpon>201701172341510_Risk_Owning_Org.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051107015_ProjectData-add-riskmap.resx">
+      <DependentUpon>201703051107015_ProjectData-add-riskmap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051119103_ProjectData-remove-riskframework.resx">
+      <DependentUpon>201703051119103_ProjectData-remove-riskframework.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051124313_ProjectData-rename-riskmap-riskframework.resx">
+      <DependentUpon>201703051124313_ProjectData-rename-riskmap-riskframework.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703051434338_Risk-deleted-flag.resx">
+      <DependentUpon>201703051434338_Risk-deleted-flag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708301249408_Add_Outcome_Framework.resx">
+      <DependentUpon>201708301249408_Add_Outcome_Framework.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\PostCode_LOSA_Birmingham.csv" />
     <EmbeddedResource Include="Resources\PostCode_LOSA_Greater_Manchester.csv" />

@@ -12,6 +12,12 @@ using RiskTracker.Entities;
 using RiskTracker.Models;
 using TriageTool.Models;
 using System.Configuration;
+using System.Net.Mail;
+using RazorEngine;
+using RazorEngine.Templating;
+using System.Reflection;
+using AegisImplicitMail;
+using System.ComponentModel;
 
 namespace RiskTracker.Controllers
 {
@@ -97,13 +103,6 @@ namespace RiskTracker.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            // just hardwire in a Project
-            var por = new ProjectOrganisationRepository();
-            var orgs = por.AllOrganisations().Where(p => p.Name == "Triage Demo").ToList();
-            var proj = por.FetchProjects(orgs[0].Id)[0];
-
-            newClient.ProjectId = proj.Id;
 
             Client client = repo_.AddNewClient(newClient);
             client = repo_.AddClientNote(client.Id, NewNote.ClientCreated());
@@ -248,11 +247,47 @@ namespace RiskTracker.Controllers
         [ResponseType(typeof(ReferralReport))]
         [HttpPost]
         public IHttpActionResult ReferralReport(Guid id) {
+          var report = createReferralReport(id);
+          return Ok(report);
+        }
+
+        [Route("api/Client/{id:guid}/SendReferralReport")]
+        [HttpPost]
+        public IHttpActionResult SendReferralReport(Guid id) {
+          return referralReportEmail(id, true);
+        }
+
+        [Route("api/Client/{id:guid}/CloseReferralReport")]
+        [HttpPost]
+        public IHttpActionResult CloseReferralReport(Guid id) {
+          return referralReportEmail(id, false);
+        }
+
+        private IHttpActionResult referralReportEmail(Guid clientId, bool sendToClient) {
+          var client = repo_.Client(clientId);
+
+          if (!bool.Parse(ConfigurationManager.AppSettings["EmailReport"]))
+            return Ok(clientId);
+
+          string reportEmail = generateReferralReportEmail(client);
+          sendReferralReportEmail(client, reportEmail, sendToClient);
+
+          return Ok(clientId);
+        }
+
+        private ReferralReport createReferralReport(Guid id) {
+          return createReferralReport(repo_.Client(id));
+        } // createReferralReport
+
+        private ReferralReport createReferralReport(Client client) {
+          var poRepo = new ProjectOrganisationRepository();
+          var projectOrg = poRepo.GetByStaffMember(User.Identity.Name);
+
           var report = new ReferralReport(staffName(User.Identity.Name));
 
-          var ra = repo_.Client(id).CurrentRiskAssessment;
+          var ra = client.CurrentRiskAssessment;
 
-          var who = agencies();
+          var who = poRepo.FetchReferralAgencies(projectOrg.Id);
           foreach (var theme in ra.ThemeAssessments)
             foreach (var category in theme.Categories)
               foreach (var risk in category.Risks) {
@@ -260,11 +295,81 @@ namespace RiskTracker.Controllers
                   continue;
 
                 foreach (var agency in who)
-                  if (agency.Risk.ToLower() == risk.Title.ToLower())
-                    report.add(risk.Id, agency);
+                  foreach (var riskId in agency.AssociatedRiskIds)
+                    if (riskId == risk.Id)
+                      report.add(risk.Id, agency);
               }
+          return report;
+        } // createReferralReport 
 
-          return Ok(report);
+        public class EmailData {
+          public Client Client;
+          public ReferralReport Report;
+        }
+
+        private string generateReferralReportEmail(Client client) {
+          var report = createReferralReport(client);
+
+          var template = loadTemplate();
+          Engine.Razor.Compile(template, "referralReport", typeof(EmailData));
+          var result = Engine.Razor.Run("referralReport", typeof(EmailData), new EmailData { Client = client, Report = report });
+          return result;
+        }
+
+        private string loadTemplate() {
+          var templateName = "referralReportEmail.html";
+          var assembly = Assembly.GetExecutingAssembly();
+          var textReader = new StreamReader(assembly.GetManifestResourceStream("TriageTool.Resources." + templateName));
+          return textReader.ReadToEnd();
+        } // loadTemplate
+
+        private void sendReferralReportEmail(Client client, string reportEmail, bool sendToClient) {
+          var poRepo = new ProjectOrganisationRepository();
+          var project = poRepo.FindProject(client.ProjectId);
+          var staff = poRepo.FindStaffMember(User.Identity.Name);
+
+          var mailMessage = new MimeMailMessage();
+          mailMessage.From = new MimeMailAddress(project.Address.Email);
+          if (sendToClient)
+            mailMessage.To.Add(new MailAddress(client.Address.Email));
+
+          if (staff.Email != null && staff.Email.Length != 0)
+            mailMessage.To.Add(new MailAddress(staff.Email));
+
+          mailMessage.Subject = "Referral Report for " + client.Name;
+          mailMessage.Body = reportEmail;
+          mailMessage.IsBodyHtml = true;
+
+          var smtpClient = smtpSender();
+          smtpClient.Send(mailMessage, SendCompletedEventHandler);
+        }
+
+        private void SendCompletedEventHandler(object sender, AsyncCompletedEventArgs e) {
+          Console.WriteLine(e.Error);
+        }
+
+        private MimeMailer smtpSender() {
+          var smtpHost = ConfigurationManager.AppSettings["SMTPHostName"];
+          var smtpPort = Int32.Parse(ConfigurationManager.AppSettings["SMTPHostPort"]);
+          //var smtpClient = new SmtpClient(smtpHost, smtpPort);
+          var smtpClient = new MimeMailer(smtpHost, smtpPort);
+
+          if (smtpPort == 465 || smtpPort == 587) {
+            smtpClient.EnableImplicitSsl = true;
+            smtpClient.SslType = SslMode.Ssl;
+          }
+
+          var auth = ConfigurationManager.AppSettings["SMTPAuth"];
+          if (auth != "None") {
+            var username = ConfigurationManager.AppSettings["SMTPUserName"];
+            var password = ConfigurationManager.AppSettings["SMTPPassword"];
+
+            smtpClient.User = username;
+            smtpClient.Password = password;
+            smtpClient.AuthenticationMode = AuthenticationType.Base64;
+          }
+
+          return smtpClient;
         }
 
         private String staffName(String userName) {
@@ -272,54 +377,6 @@ namespace RiskTracker.Controllers
           return porepo.FindStaffMember(userName).Name;
         }
         
-        private List<ReferralAgency> agencies() {
-          var who = new List<ReferralAgency>();
-          who.Add(new ReferralAgency("housing - homeless", "SHARP", "SHARP is a charity organization working with young people who are homeless and in need of accommodation. SHARP also have an outreach service supporting people with mental health problems and an emergency hostal which caters for all age groups", "mike@sharpuk.org", "0121 544 0542", ""));
-          who.Add(new ReferralAgency("Housing - Temporary Accomodation", "Sandwell Citizens Advice", "We provide free, confidential and impartial advice.  People come to us with all sorts of issues. You may have money, benefit, housing or employment problems. You may be facing a crisis, or just considering your options.", "", "03444 111 444", "https://citizensadvice.citizensadvice.org.uk/sandwellcab.htm"));
-          who.Add(new ReferralAgency("Housing - Unsuitable Housing", "Sandwell Citizens Advice", "We provide free, confidential and impartial advice.  People come to us with all sorts of issues. You may have money, benefit, housing or employment problems. You may be facing a crisis, or just considering your options.", "", "03444 111 444", "https://citizensadvice.citizensadvice.org.uk/sandwellcab.htm"));
-          who.Add(new ReferralAgency("Housing - Unsuitable Housing", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-
-          who.Add(new ReferralAgency("Disclosed domestic violence and abuse", "Sandwell Women's Aid", "Sandwell Women’s Aid have for the last 25 years offered refuge, support and counselling to victims of domestic abuse and sexual violence. We place victims’ voics at the heart of all that we do, and our specialist team works with drive and passion to change policy, practice and people’s lives. We take a whole-person approach to interpersonal violence, and over the years the organisation has grown from a single refuge to a large accommodation provider, community support agency and training and policy advisory.", "info@sandwellwomensaid.co.uk", "0121 553 0090", "http://www.sandwellwomensaid.co.uk/"));
-
-          who.Add(new ReferralAgency("Caring responsibilities - lack of access to replacement or respite care", "Cares Sandwell", "CARES offers a free and confidential information, advice and support service for Carers and the people they care for within Sandwell.", "cares.sandwell@btinternet.com", "0121 558 7003", "http://cares-sandwell.org.uk/"));
-
-          who.Add(new ReferralAgency("Financial hardship", "Sandwell Citizens Advice", "We provide free, confidential and impartial advice.  People come to us with all sorts of issues. You may have money, benefit, housing or employment problems. You may be facing a crisis, or just considering your options.", "", "03444 111 444", "https://citizensadvice.citizensadvice.org.uk/sandwellcab.htm"));
-          who.Add(new ReferralAgency("Financial hardship", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-
-          who.Add(new ReferralAgency("Lack of Access to Affordable Childcare","Sandwell Family Information Service","Get advice and information here on finding childcare, the different types of childcare available, how to choose quality childcare, how to make sure your child is safe, how to get extra help accessing childcare and information on fiancial support and help with childcare costs.", "family_information@sandwell.gov.uk", "0121 569 4914", "http://www.sandwell.gov.uk/familyinfo"));
- 
-          who.Add(new ReferralAgency("Vulnerable Adult","Vulnerable People Housing Service (VPHS)","SHIP (Supported Housing to Independence Pathway) and the SRP (Single Referral Pathway). The SRP (Single Referral Pathway) is a partnership between providers of supported housing in Sandwell and Sandwell Metropolitan Borough Council. The SRP has been working for the benefit of vulnerable people in housing need since 2006.", "", "0121 569 5238", "https://openaccess.sandwellhomes.org.uk"));
-          
-          who.Add(new ReferralAgency("Social Isolation","Age UK Sandwell","This service is provided for older people who are isolated and vulnerable, living in any of the six towns in Sandwell.", "info@ageuksandwell.org.uk", "0121 314 4526", "http://www.ageuk.org.uk/sandwell/"));
-        
-          who.Add(new ReferralAgency("Alcohol","Swanswell","We’re a national alcohol and drug charity that helps people change and be happy. We believe in a society free from problem alcohol and drug use.", "admin@swanswell.org", "0121 553 1333", "https://www.swanswell.org"));
-
-          who.Add(new ReferralAgency("Demonstrating poor work ethic in past three months", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-          who.Add(new ReferralAgency("Low confidence and self esteem", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-          who.Add(new ReferralAgency("Not in Education, Employment or Training (NEET)", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-          who.Add(new ReferralAgency("Not Engaged in a Work Focussed Activity", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-          
-          who.Add(new ReferralAgency("Difficulty speaking English", "Sandwell College", "There are no formal entry requirements. You will take an English assessment to find out what your current level of English is in the four skill areas: Speaking, Listening, Reading and Writing, and to identify areas that you need to develop.", "enquiries@sandwell.ac.uk", "0800 622006", "http://www.sandwell.ac.uk/courses/english-for-beginners-esol/"));
-
-          who.Add(new ReferralAgency("Substance misuse", "IRiS Sandwell","The IRiS Partnership brings together Cranstoun, Inclusion and a range of local partners with proven expertise, creative minds and a shared desire to re-shape drug and alcohol treatment and recovery services in the local communities we serve.", "sandwellreferrals@irispartnership.org.uk", "0121 553 1333", "http://www.irispartnership.org/services/sandwell/"));
-
-          who.Add(new ReferralAgency("Long-term recipient of Employment Support Allowance", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-          who.Add(new ReferralAgency("Recent recipient of Employment Support Allowance", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-
-          who.Add(new ReferralAgency("Limited IT skills", "Future Skills Sandwell", "Future Skills Sandwell, one of the Country’s most successful providers of Work Based Learning.", "enquiries@sandwell.ac.uk", "0121 667 5080", "http://www.futureskillssandwell.com/"));
-
-          who.Add(new ReferralAgency("Long-Term Unemployed", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-          who.Add(new ReferralAgency("Recently Unemployed", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-
-          who.Add(new ReferralAgency("Highest functional skills - Level Two", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-          who.Add(new ReferralAgency("No qualifications", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-          who.Add(new ReferralAgency("Highest qualification - Entry Level", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-          who.Add(new ReferralAgency("Highest qualification - Level One", "Sandwell Connexions", "Support to enable young people to participate in education, employment and training", "sandwell_connexions@sandwell.gov.uk", "0121 569 2955", "http://www.connexionssandwell.co.uk/"));
-
-          return who;
-        }
-
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

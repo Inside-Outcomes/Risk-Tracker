@@ -50,9 +50,9 @@
             <a ng-click="controller.editStaffForm(staff)">{{ staff.name }}</a> <br/>
         </div>
     </tab>
-    <tab heading="Locations" active="controller.viewLocation">
-        <div data-ng-repeat="location in controller.allLocations">
-            <a ng-click="controller.editLocationForm(location)">{{ location.name }}</a><br />
+    <tab heading="Referral Agencies" active="controller.viewReferralAgencies">
+        <div data-ng-repeat="agency in controller.allReferralAgencies">
+            <a ng-click="controller.editReferralAgencyForm(agency)">{{ agency.name }}</a> <br/>
         </div>
     </tab>
 </tabset>

@@ -5,10 +5,15 @@ using RiskTracker.Entities;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Data.Entity;
+using System.Configuration;
 
 namespace RiskTracker {
   public static class DataConfig {
     public static void InitialData() {
+      var bootstrap = ConfigurationManager.AppSettings["Bootstrap"];
+      if (bootstrap == null || !bool.Parse(bootstrap))
+        return;
+
       initialClientAppsList();
       setupAdmins();
 
@@ -65,7 +70,7 @@ namespace RiskTracker {
         
         var risks = gatherRisks(context);
 
-        foreach (RiskMap riskMap in buildRiskMaps(risks)) {
+        foreach (RiskMapData riskMap in buildRiskMaps(risks)) {
           var existing = context.RiskMaps.Where(rm => rm.Name == riskMap.Name).SingleOrDefault();
           if (existing == null)
             context.RiskMaps.Add(riskMap);
@@ -77,7 +82,7 @@ namespace RiskTracker {
       } // using ...
     } // setupRiskMaps
 
-    private static List<RiskMap> gatherRiskMaps(DatabaseContext context) {
+    private static List<RiskMapData> gatherRiskMaps(DatabaseContext context) {
       return context.RiskMaps.ToList();
     }  // gatherRiskMaps
 
@@ -100,18 +105,18 @@ namespace RiskTracker {
         Title = Housing_homeless,
         Score = "A",
         Theme = Personal_circumstances,
-        Category = Type_accomodation,
-        Guidance = "The client has nowhere to live: someone is not homeless if they are in temporary accomodation",
+        Category = Type_accommodation,
+        Guidance = "The client has nowhere to live: someone is not homeless if they are in temporary accommodation",
         Grouping = "housing"
       });
-      risks.Add(Housing_temporary_accomodation,
+      risks.Add(Housing_temporary_accommodation,
                 new Risk {
         Id = Guid.NewGuid(),
-        Title = Housing_temporary_accomodation,
+        Title = Housing_temporary_accommodation,
         Score = "B",
         Theme = Personal_circumstances,
-        Category = Type_accomodation,
-        Guidance = "The client is living in temporary accomodation, this includes hostel accomodation, sofa surfing, or short-term arrangements outside the family",
+        Category = Type_accommodation,
+        Guidance = "The client is living in temporary accommodation, this includes hostel accommodation, sofa surfing, or short-term arrangements outside the family",
         Grouping = "housing"
       });
       risks.Add(Housing_unsuitable_housing,
@@ -120,7 +125,7 @@ namespace RiskTracker {
         Title = Housing_unsuitable_housing,
         Score = "C",
         Theme = Personal_circumstances,
-        Category = Type_accomodation,
+        Category = Type_accommodation,
         Guidance = "They client feels they are living in unsuitable accomodation, this might be because it is unsafe, unsanitary, overcrowded, or in disrepair",
         Grouping = "housing"
       });
@@ -864,8 +869,8 @@ namespace RiskTracker {
       return existingRisks;
     } // gatherRisks
 
-    private static List<RiskMap> buildRiskMaps(IDictionary<string, Risk> risks) {
-      List<RiskMap> riskMaps = new List<RiskMap>();
+    private static List<RiskMapData> buildRiskMaps(IDictionary<string, Risk> risks) {
+      var riskMaps = new List<RiskMapData>();
       riskMaps.Add(createStartingWell(risks));
       riskMaps.Add(createDevelopingWell(risks));
       riskMaps.Add(createWorkingWell(risks));
@@ -879,7 +884,7 @@ namespace RiskTracker {
     private static void updateRisksWithOutcomeFrameworks(IDictionary<string, Risk> risks) {
       updateRiskWithOutcomeFrameworks(risks, Disclosed_domestic_violence_and_abuse, "PH50  CG110 1.5", "1.11", "", "KI-1", "D4");
       updateRiskWithOutcomeFrameworks(risks, Housing_homeless, "", "1.15i", "", "KI-1", "");
-      updateRiskWithOutcomeFrameworks(risks, Housing_temporary_accomodation, "", "1.15i", "", "KI-1", "");
+      updateRiskWithOutcomeFrameworks(risks, Housing_temporary_accommodation, "", "1.15i", "", "KI-1", "");
       updateRiskWithOutcomeFrameworks(risks, Housing_unsuitable_housing, "CG161 1.16", "1.17", "", "KI-1", "");
       updateRiskWithOutcomeFrameworks(risks, Financial_hardship, "", "1.1 1.17", "", "KI-4", "");
       updateRiskWithOutcomeFrameworks(risks, Vulnerable_adult, "", "", "", "", "D4");
@@ -975,11 +980,11 @@ namespace RiskTracker {
       risk.ASCOF = ASCOF;
     } // 
 
-    private static RiskMap createLivingWell(IDictionary<string, Risk> risks) { 
+    private static RiskMapData createLivingWell(IDictionary<string, Risk> risks) { 
       string[] livingWellRisks = { 
         Disclosed_domestic_violence_and_abuse,
         Housing_homeless,
-        Housing_temporary_accomodation,
+        Housing_temporary_accommodation,
         Housing_unsuitable_housing, 
         Vulnerable_adult,
         Financial_hardship,
@@ -1011,10 +1016,10 @@ namespace RiskTracker {
       foreach (var t in livingWellRisks)
         riskList.Add(risks[t]);
 
-      return RiskMap.create("Living Well", riskList);
+      return RiskMapData.create("Living Well", riskList, null);
     } // createLivingWell
 
-    private static RiskMap createStartingWell(IDictionary<string, Risk> risks) {
+    private static RiskMapData createStartingWell(IDictionary<string, Risk> risks) {
       string[] startingWellRisks = {
         Dietary_deficiencies,
         Smoking,
@@ -1030,7 +1035,7 @@ namespace RiskTracker {
         Missed_antenatal_appointments,
         Disclosed_domestic_violence_and_abuse,
         Housing_homeless,
-        Housing_temporary_accomodation,
+        Housing_temporary_accommodation,
         Housing_unsuitable_housing,
         Financial_hardship,
         Vulnerable_adult,
@@ -1046,10 +1051,10 @@ namespace RiskTracker {
       foreach (var t in startingWellRisks)
         riskList.Add(risks[t]);
 
-      return RiskMap.create("Starting Well", riskList);
+      return RiskMapData.create("Starting Well", riskList, null);
     }
 
-    private static RiskMap createDevelopingWell(IDictionary<string, Risk> risks) {
+    private static RiskMapData createDevelopingWell(IDictionary<string, Risk> risks) {
       string[] developingWellRisks = {
         Dietary_deficiencies,
         Smoking,
@@ -1058,7 +1063,7 @@ namespace RiskTracker {
         Low_wellbeing,
         Disclosed_domestic_violence_and_abuse,
         Housing_homeless,
-        Housing_temporary_accomodation,
+        Housing_temporary_accommodation,
         Housing_unsuitable_housing,
         Vulnerable_adult,
         Safeguarded_child,
@@ -1093,16 +1098,16 @@ namespace RiskTracker {
       foreach (var t in developingWellRisks)
         riskList.Add(risks[t]);
 
-      return RiskMap.create("Developing Well", riskList);
+      return RiskMapData.create("Developing Well", riskList, null);
     }
 
-    private static RiskMap createWorkingWell(IDictionary<string, Risk> risks) {
+    private static RiskMapData createWorkingWell(IDictionary<string, Risk> risks) {
       string[] workingWellRisks = {
         Alcohol,
         Substance_misuse,
         Disclosed_domestic_violence_and_abuse,
         Housing_homeless,
-        Housing_temporary_accomodation,
+        Housing_temporary_accommodation,
         Housing_unsuitable_housing,
         Vulnerable_adult,
         Social_isolation,
@@ -1131,16 +1136,16 @@ namespace RiskTracker {
       foreach (var t in workingWellRisks)
         riskList.Add(risks[t]);
 
-      return RiskMap.create("Working Well", riskList);
+      return RiskMapData.create("Working Well", riskList, null);
     }
 
-    private static RiskMap createAgeingWell(IDictionary<string, Risk> risks) {
+    private static RiskMapData createAgeingWell(IDictionary<string, Risk> risks) {
       string[] ageingWellRisks = {
         Alcohol,
         Substance_misuse,
         Disclosed_domestic_violence_and_abuse,
         Housing_homeless,
-        Housing_temporary_accomodation,
+        Housing_temporary_accommodation,
         Housing_unsuitable_housing,
         Vulnerable_adult,
         Social_isolation,
@@ -1170,16 +1175,16 @@ namespace RiskTracker {
       foreach (var t in ageingWellRisks)
         riskList.Add(risks[t]);
 
-      return RiskMap.create("Ageing Well", riskList);
+      return RiskMapData.create("Ageing Well", riskList, null);
     }
 
-    private static RiskMap createDyingWell(IDictionary<string, Risk> risks) {
+    private static RiskMapData createDyingWell(IDictionary<string, Risk> risks) {
       string[] dyingWellRisks = {
         Alcohol,
         Substance_misuse,
         Disclosed_domestic_violence_and_abuse,
         Housing_homeless,
-        Housing_temporary_accomodation,
+        Housing_temporary_accommodation,
         Housing_unsuitable_housing,
         Vulnerable_adult,
         Social_isolation,
@@ -1216,14 +1221,14 @@ namespace RiskTracker {
       foreach (var t in dyingWellRisks)
         riskList.Add(risks[t]);
 
-      return RiskMap.create("End of Life", riskList);
+      return RiskMapData.create("End of Life", riskList, null);
     }
 
-    private static RiskMap createDiabetes(IDictionary<string, Risk> risks) {
+    private static RiskMapData createDiabetes(IDictionary<string, Risk> risks) {
       string[] dyingWellRisks = {
           Disclosed_domestic_violence_and_abuse,
           Housing_homeless,
-          Housing_temporary_accomodation,
+          Housing_temporary_accommodation,
           Housing_unsuitable_housing,
           Financial_hardship,
           Vulnerable_adult,
@@ -1255,12 +1260,12 @@ namespace RiskTracker {
       foreach (var t in dyingWellRisks)
         riskList.Add(risks[t]);
 
-      return RiskMap.create("Diabetes", riskList);
+      return RiskMapData.create("Diabetes", riskList, null);
     }
 
     private const string Disclosed_domestic_violence_and_abuse = "Disclosed domestic violence and abuse";
     private const string Housing_homeless = "Housing - homeless";
-    private const string Housing_temporary_accomodation = "Housing - temporary accomodation";
+    private const string Housing_temporary_accommodation = "Housing - temporary accommodation";
     private const string Housing_unsuitable_housing = "Housing - unsuitable housing";
     private const string Financial_hardship = "Financial hardship";
     private const string Vulnerable_adult = "Vulnerable adult";
@@ -1350,7 +1355,7 @@ namespace RiskTracker {
 
     private const string Type_environment = "Environment";
     private const string Type_domestic_abuse = "Domestic abuse";
-    private const string Type_accomodation = "Accomodation";
+    private const string Type_accommodation = "Accommodation";
     private const string Type_family = "family";
   } // DataConfig
 } // namespace ...

@@ -2,14 +2,15 @@
 <div ng-switch="controller.wizard">
     <div ng-switch-when="client"> 
         <button class="btn btn-info pull-right" type="submit"
-                ng-disabled="!(controller.currentClient.name)  || !(controller.currentClient.address.email)"
+                ng-disabled="!(controller.currentClient.name)"
                 ng-click="controller.nextToRiskMap()">
             Next &raquo;
         </button>
-        <h3>1 - Client Details</h3>
+        <h3><span class="noprint">1 - </span>Client Details</h3>
 
         <input type="text" class="form-control" placeholder="Client name" data-ng-model="controller.currentClient.name" required autofocus>
-        <address-form address="controller.currentClient.address" notitle="true" nowebsite="true"></address-form>
+        <br/>
+        <address-form address="controller.currentClient.address" notitle="true" nowebsite="true" disclaimer="true" summary="true"></address-form>
     </div>
 
     <div ng-switch-when="riskmap">
@@ -21,7 +22,7 @@
                 ng-click="controller.backToClient()">
             &laquo; Back
         </button>
-        <h3>2 - Risks for {{controller.currentClient.name}}</h3>
+        <h3><span class="noprint">2 - </span>Risks for {{controller.currentClient.name}}</h3>
 
         <ng-include src="'app/views/common/risks.html'">
     </div>
@@ -30,14 +31,18 @@
         <button class="btn btn-danger pull-right" type="submit"
                 ng-click="controller.completeWizard()">
            Finish
-       </button>
-       <button class="btn btn-info pull-right" type="submit"
-               ng-click="controller.backToRiskMap()">
+        </button>
+        <button class="btn btn-info pull-right" type="submit"
+                ng-click="controller.printForm()">
+           <i class="glyphicon glyphicon-print"></i> Print
+        </button>
+        <button class="btn btn-info pull-right" type="submit"
+                ng-click="controller.backToRiskMap()">
            &laquo; Back
-       </button>
-       <h3>3 - Referral Report for {{controller.currentClient.name}}</h3>
+        </button>
+        <h3><span class="noprint">3 - </span>Referral Report for {{controller.currentClient.name}}</h3>
  
-       <ng-include src="'app/views/common/referrals.html'">   
+        <ng-include src="'app/views/common/referrals.html'">   
     </div>
 </div>
 
@@ -46,39 +51,41 @@
         <h3 class="modal-title">Referral Report Completed</h3>
     </div>
     <div class="modal-body">
-        <p>Report emailed to {{thingToEdit.name}} at {{thingToEdit.address.email}}</p>
-        <p>Report Printed</p>
+        <p>Referral Report for {{thingToEdit.name}} Complete.</p>
+        <p ng-hide="thingToEdit.noemail">A copy of the report has been emailed to {{thingToEdit.address.email}}.</p>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> OK</button>
+        <button class="btn btn-danger" ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
     </div>
 </script>
 
-<script type="text/ng-template" id="changeLocationProject.html">
+<script type="text/ng-template" id="errorReport.html">
     <div class="modal-header">
-        <h3 class="modal-title">Change Location or Project</h3>
+        <h3 class="modal-title">Referral Report Error</h3>
     </div>
     <div class="modal-body">
-        <div class="row">
-            <div class="col-md-4">Project : </div>
-            <div class="col-md-8">
-                <select ng-model="thingToEdit.projectId"
-                        ng-options="p.id as p.name for p in thingToEdit.projects"
-                        class="form-control"></select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">Location : </div>
-            <div class="col-md-8">
-                <select ng-model="thingToEdit.locationId"
-                        ng-options="l.id as l.name for l in thingToEdit.locations"
-                        class="form-control"></select>
-            </div>
-        </div>
+        <p>There was a problem sending the email to {{thingToEdit.address.email}}.</p>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-danger" data-ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
-        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-save"></i> Save</button>
+        <button class="btn btn-primary" data-ng-click="update()"><i class="glyphicon glyphicon-ok"></i> Retry</button>
+        <button class="btn btn-info" ng-click="thingToEdit.noemail=true; update()"><i class="glyphicon glyphicon-ok"></i> Continue without emailing</button>
+        <button class="btn btn-danger" ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="emailDisclaimer.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Referral Report Email</h3>
+    </div>
+    <div class="modal-body">
+        <p>Does the client understand that the email address supplied will be used to send a summary of the issues discussed?</p>
+        <p>The email address will not be used for any other purpose.</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="update()"><i class="glyphicon glyphicon-ok"></i> OK</button>
+        <button class="btn btn-info" ng-click="thingToEdit.noemail=true; update()"><i class="glyphicon glyphicon-ok"></i> Continue without emailing</button>
+        <button class="btn btn-danger" ng-click="cancel()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button>
     </div>
 </script>
 

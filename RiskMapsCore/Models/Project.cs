@@ -25,7 +25,7 @@ namespace RiskTracker.Models {
     public Guid Id { get { return proj_.Id; } set { proj_.Id = value; } }
     public string Name { get { return proj_.Name; } set { proj_.Name = value; } }
     public AddressData Address { get { return proj_.Address; } }
-    public string RiskFramework { get { return proj_.RiskFramework; } set { proj_.RiskFramework = value; } }
+    public Guid RiskFramework { get { return proj_.RiskFramework; } set { proj_.RiskFramework = value; } }
     public IEnumerable<Organisation> Commissioners { get { return commissioners_; } }
     public IEnumerable<ProjectQuestionData> Questions { get { return proj_.Questions; } }
 

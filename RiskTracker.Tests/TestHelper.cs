@@ -17,6 +17,16 @@ namespace RiskTracker.Tests {
       return update;
     } // testClient
 
+    static public NewClient testClient(Project proj) {
+      var update = new NewClient {
+        Name = "TEST__Charlie",
+      };
+      update.ProjectId = proj.Id;
+      update.Address.PhoneNumber = "Withheld";
+      update.Address.Email = "charlie@test.com";
+      return update;
+    } // testClient
+
     static public void clientCleanUp() {
       using (var db = new DatabaseContext()) {
 
@@ -49,7 +59,7 @@ namespace RiskTracker.Tests {
       var proj =  new Project();
       proj.Name = String.Format("ORGTEST__{0}", name);
       proj.Address.Details = addressLine();
-      proj.RiskFramework = "risky";
+      proj.RiskFramework = Guid.Empty;
       return proj;
     } // newProject
 

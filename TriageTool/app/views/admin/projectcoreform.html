@@ -2,7 +2,7 @@
 <select class="form-control" ng-model="controller.project.riskFramework">
   <option value="">--Choose Risk Map--</option>
   <option ng-repeat="riskmap in controller.allRiskmaps"
-          value="{{riskmap.name}}" ng-selected="controller.project.riskFramework == riskmap.name">
+          value="{{riskmap.id}}" ng-selected="controller.project.riskFramework == riskmap.id">
         {{riskmap.name}}
     </option>
 </select>

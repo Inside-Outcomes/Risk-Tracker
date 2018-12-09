@@ -9,7 +9,7 @@ function ($routeParams, $modal, authService, dataService, localStorageService, U
 
     clientController.setup(controller, dataService, $modal, localStorageService, Upload, $scope);
 
-    orgController.setup(controller, dataService, $modal);
+    orgController.setup(controller, dataService, $modal, $routeParams);
 
     reportsController.setup(controller, dataService);
 
@@ -97,6 +97,24 @@ function ($routeParams, $modal, authService, dataService, localStorageService, U
         controller.loadAndViewReports(controller.organisation);
     } // showReports
 
+    controller.exportEverything = function () {
+        controller.view = "exportolump";
+        controller.exportUrl = null;
+        controller.exportMessage = "Please wait ...";
+        controller.exportolump(controller.organisation);
+    }
+
+    controller.exportolump = function (organisation) {
+        controller.view = "exportolump";
+        dataService.exportolump(organisation).then(function (results) {
+            if (results.data.msg) 
+                controller.exportMessage = results.data.msg;
+            if (results.data.url)
+                controller.exportUrl = results.data.url;
+            if (!results.data.complete)
+                setTimeout(function () { controller.exportolump(organisation) }, 2000);
+        })
+    }
 
     controller.loadClientList = function () {
         controller.message = "Loading ...";

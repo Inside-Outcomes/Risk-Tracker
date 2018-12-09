@@ -1,0 +1,6 @@
+﻿<h3>Choose project</h3>
+<ul>
+    <li ng-repeat="project in controller.allProjects">
+        <a ng-click="controller.selectProject(project)">{{project.name}}</a>
+    </li>
+</ul>

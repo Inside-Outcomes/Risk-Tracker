@@ -1,0 +1,24 @@
+﻿<h3>Referral Agency Review</h3>
+<div> {{controller.reportData.additional.agencyCount}} 
+    <span ng-show="controller.reportData.additional.agencyCount == 1">agency</span>
+    <span ng-show="controller.reportData.additional.agencyCount != 1">agencies</span>
+</div>
+<h4>Agency Details Overdue For Review</h4>
+<div ng-repeat="agency in controller.reportData.data">
+    <div class="row" ng-if="agency.overdue">
+        <div class="col-md-6"><a href="#/supervisor/agency/{{agency.id}}" target="agency"><strong>{{agency.name}}</strong></a></div>
+        <div class="col-md-6">{{agency.reviewDate|date:'dd MMM yyyy'}}
+          <span ng-hide="agency.reviewDate">No date set</span>
+        </div>
+    </div>
+</div>
+<h4>Review Forthcoming</h4>
+<div ng-repeat="agency in controller.reportData.data">
+    <div class="row" ng-if="!agency.overdue">
+        <div class="col-md-6"><a href="#/supervisor/agency/{{agency.id}}" target="agency"><strong>{{agency.name}}</strong></a></div>
+        <div class="col-md-6">
+            {{agency.reviewDate|date:'dd MMM yyyy'}}
+            <span ng-hide="agency.reviewDate">No date set</span>
+        </div>
+    </div>
+</div>

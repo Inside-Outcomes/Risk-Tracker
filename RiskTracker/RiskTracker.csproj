@@ -72,6 +72,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Spatial, Version=5.6.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\System.Spatial.5.6.4\lib\net40\System.Spatial.dll</HintPath>
@@ -206,6 +207,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\ExportEverythingController.cs" />
     <Compile Include="Controllers\ClientsFileController.cs" />
     <Compile Include="Controllers\ClientsController.cs" />
     <Compile Include="Controllers\GraphController.cs" />
@@ -222,17 +224,6 @@
     <Compile Include="Providers\Header.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
     <Compile Include="Providers\SimpleRefreshTokenProvider.cs" />
-    <Compile Include="Reports\ActionRequired.cs" />
-    <Compile Include="Reports\ActivityReport.cs" />
-    <Compile Include="Reports\AdhocReport.cs" />
-    <Compile Include="Reports\ExportReport.cs" />
-    <Compile Include="Reports\OpenDataReport.cs" />
-    <Compile Include="Reports\AuditReport.cs" />
-    <Compile Include="Reports\CommissionersReport.cs" />
-    <Compile Include="Reports\ProgressReport.cs" />
-    <Compile Include="Reports\Reports.cs" />
-    <Compile Include="Reports\ReportsRepository.cs" />
-    <Compile Include="Reports\ResolutionReport.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -269,20 +260,27 @@
     <Content Include="app\views\adminRisksHome.html" />
     <Content Include="app\views\admin\editlocation.html" />
     <Content Include="app\views\admin\editorg.html" />
+    <Content Include="app\views\admin\editoutcomeframework.html" />
     <Content Include="app\views\admin\editproject.html" />
+    <Content Include="app\views\admin\editreferralagency.html" />
     <Content Include="app\views\admin\editrisk.html" />
     <Content Include="app\views\admin\editriskmap.html" />
     <Content Include="app\views\admin\editstaff.html" />
+    <Content Include="app\views\admin\exportolump.html" />
     <Content Include="app\views\admin\locationcoreform.html" />
     <Content Include="app\views\admin\newlocation.html" />
     <Content Include="app\views\admin\neworg.html" />
+    <Content Include="app\views\admin\newoutcomeframework.html" />
     <Content Include="app\views\admin\newproject.html" />
+    <Content Include="app\views\admin\newreferralagency.html" />
     <Content Include="app\views\admin\newrisk.html" />
     <Content Include="app\views\admin\newriskmap.html" />
     <Content Include="app\views\admin\newstaff.html" />
     <Content Include="app\views\admin\orglist.html" />
+    <Content Include="app\views\admin\outcomeframeworkcoreform.html" />
     <Content Include="app\views\admin\projectcoreform.html" />
     <Content Include="app\views\admin\projectquestionslist.html" />
+    <Content Include="app\views\admin\referralagencycoreform.html" />
     <Content Include="app\views\admin\risk.html" />
     <Content Include="app\views\admin\riskmap.html" />
     <Content Include="app\views\admin\riskmaplist.html" />

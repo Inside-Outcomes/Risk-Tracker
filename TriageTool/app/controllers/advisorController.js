@@ -9,7 +9,5 @@ app.controller('advisorController',
   clientController.setup(advisor, dataService, $modal, localStorageService, Upload, $scope);
 
   advisorControllerHelper.setup(advisor, dataService, staffService, 'advisor');
-
-  advisor.createNewClient();
 }]);
 

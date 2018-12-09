@@ -38,6 +38,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AegisImplicitMail, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AIM.1.0.3\lib\AegisImplicitMail.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
@@ -87,6 +91,9 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="RazorEngine">
+      <HintPath>..\packages\RazorEngine.3.9.3\lib\net45\RazorEngine.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -146,16 +153,29 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\controllers\coordinatorController.js" />
+    <Content Include="app\controllers\risksController.js" />
+    <Content Include="app\controllers\supervisorController.js" />
     <Content Include="app\css\bootstrap\bootstrap.css" />
     <Content Include="app\css\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="app\css\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="app\css\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="app\css\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="app\images\logo.png" />
+    <Content Include="app\views\admin\editreferralagency.html" />
+    <Content Include="app\views\admin\newreferralagency.html" />
+    <Content Include="app\views\admin\referralagencycoreform.html" />
+    <Content Include="app\views\advisor\projectChooser.html" />
     <Content Include="app\views\common\referrals.html" />
     <Content Include="app\views\common\risks.html" />
+    <Content Include="app\views\reports\agencyreview.html" />
+    <Content Include="app\views\reports\reportpicker.html" />
+    <Content Include="app\views\coordinator.html" />
+    <Content Include="app\views\risksHome.html" />
+    <Content Include="app\views\supervisor.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <EmbeddedResource Include="Resources\referralReportEmail.html" />
     <Content Include="Scripts\es5-shim.map" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -167,7 +187,6 @@
   <ItemGroup>
     <Content Include="app\app.js" />
     <Content Include="app\controllers\adminOrgController.js" />
-    <Content Include="app\controllers\adminRisksController.js" />
     <Content Include="app\controllers\advisorController.js" />
     <Content Include="app\controllers\advisorControllerHelper.js" />
     <Content Include="app\controllers\clientControlHelper.js" />
@@ -194,23 +213,17 @@
     <Content Include="app\services\dataService.js" />
     <Content Include="app\services\staffService.js" />
     <Content Include="app\views\adminOrgHome.html" />
-    <Content Include="app\views\adminRisksHome.html" />
-    <Content Include="app\views\admin\editlocation.html" />
     <Content Include="app\views\admin\editorg.html" />
     <Content Include="app\views\admin\editproject.html" />
-    <Content Include="app\views\admin\editrisk.html" />
+    <Content Include="app\views\admin\riskform.html" />
     <Content Include="app\views\admin\editriskmap.html" />
     <Content Include="app\views\admin\editstaff.html" />
-    <Content Include="app\views\admin\locationcoreform.html" />
-    <Content Include="app\views\admin\newlocation.html" />
     <Content Include="app\views\admin\neworg.html" />
     <Content Include="app\views\admin\newproject.html" />
-    <Content Include="app\views\admin\newrisk.html" />
     <Content Include="app\views\admin\newriskmap.html" />
     <Content Include="app\views\admin\newstaff.html" />
     <Content Include="app\views\admin\orglist.html" />
     <Content Include="app\views\admin\projectcoreform.html" />
-    <Content Include="app\views\admin\projectquestionslist.html" />
     <Content Include="app\views\admin\risk.html" />
     <Content Include="app\views\admin\riskmap.html" />
     <Content Include="app\views\admin\riskmaplist.html" />
@@ -233,16 +246,7 @@
     <Content Include="app\views\home.html" />
     <Content Include="app\views\norole.html" />
     <Content Include="app\views\profile.html" />
-    <Content Include="app\views\reports\actionrequired.html" />
-    <Content Include="app\views\reports\activityreport.html" />
-    <Content Include="app\views\reports\adhoc.html" />
-    <Content Include="app\views\reports\audit.html" />
-    <Content Include="app\views\reports\commissioners.html" />
-    <Content Include="app\views\reports\export.html" />
     <Content Include="app\views\reports\opendata.html" />
-    <Content Include="app\views\reports\pcprogress.html" />
-    <Content Include="app\views\reports\reportpicker.html" />
-    <Content Include="app\views\reports\resolution.html" />
     <Content Include="index.html" />
     <Content Include="Scripts\angular-datatables.min.js" />
     <Content Include="Scripts\angular-local-storage.min.js" />
@@ -281,6 +285,7 @@
     <Compile Include="Controllers\MIMEAssistant.cs" />
     <Compile Include="Controllers\OrganisationController.cs" />
     <Compile Include="Controllers\ReferenceIdController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\RiskMapController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

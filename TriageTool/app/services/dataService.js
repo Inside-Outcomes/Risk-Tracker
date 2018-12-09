@@ -143,6 +143,12 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
     var _clientReferralReport = function (guid) {
         return _post(clientAction(guid, 'ReferralReport'));
     } // _clientReferralReport
+    var _emailReferralReport = function (guid) {
+        return _post(clientAction(guid, 'SendReferralReport'));
+    } // _emailReferralReport
+    var _closeReferralReport = function (guid) {
+        return _post(clientAction(guid, 'CloseReferralReport'));
+    } // _closeReferralReport
 
     /////////////////////////////////////////////////
     var _listOrganisations = function () {
@@ -183,13 +189,6 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
     var _deleteProject = function (orgData, projData) {
         return _delete(orgAction(orgData.id, 'Project', projData.id));
     } // _deleteProject
-    var _addProjectQuestion = function (orgData, projData, questionData) {
-        return _post(orgAction(orgData.id, 'Project', projData.id, 'Question'), questionData);
-    } // _addProjectQuestion
-    var _updateProjectQuestion = function (orgData, projData, questionData) {
-        return _put(orgAction(orgData.id, 'Project', projData.id, 'Question'), questionData);
-    } // _updateProjectQuestion
-
     var _fetchOrgDetails = function (orgData) {
         return _get(orgAction(orgData.id));
     } // _loadOrgDetails
@@ -216,28 +215,26 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
             return _delete(orgAction(orgData.id, 'StaffMember', projData.id, staffMember.id));
         return _delete(orgAction(orgData.id, 'StaffMember', staffMember.id));
     } // _deleteStaffMember
-
-    var _listLocations = function (orgData) {
-        return _get(orgAction(orgData.id, 'Locations'));
-    } // _listLocations
-    var _addNewLocation = function (orgData, newLocation, projectData) {
-        if (projectData)
-            return _post(orgAction(orgData.id, 'AddLocation', projectData.id), newLocation);
-        return _post(orgAction(orgData.id, 'AddLocation'), newLocation);
-    } // _addNewLocation
-    var _updateLocation = function (orgData, location, projectData) {
-        if (projectData)
-            return _put(orgAction(orgData.id, 'Location', projectData.id, location.id, 'Update'), location);
-        return _put(orgAction(orgData.id, 'Location', location.id, 'Update'), location);
-    } // _updateLocation
-    var _canDeleteLocation = function (orgData, location) {
-        return _get(orgAction(orgData.id, 'Location', location.id, 'CanDelete'));
-    } // _canDeleteLocation
-    var _deleteLocation = function (orgData, location, projectData) {
-        if (projectData)
-            return _delete(orgAction(orgData.id, 'Location', projectData.id, location.id));
-        return _delete(orgAction(orgData.id, 'Location', location.id));
-    } // _deleteLocation
+    var _listReferralAgencies = function (orgData, projData) {
+        if (projData)
+            return _get(orgAction(orgData.id, 'ReferralAgencies', projData.id));
+        return _get(orgAction(orgData.id, 'ReferralAgencies'));
+    }
+    var _addNewReferralAgency = function (orgData, newReferralAgency, projData) {
+        if (projData)
+            return _post(orgAction(orgData.id, 'AddReferralAgency', projData.id), newReferralAgency);
+        return _post(orgAction(orgData.id, 'AddReferralAgency'), newReferralAgency);
+    } // _addNewReferralAgency
+    var _updateReferralAgency = function (orgData, referralAgency, projData) {
+        if (projData)
+            return _put(orgAction(orgData.id, 'ReferralAgency', projData.id, referralAgency.id, 'Update'), referralAgency);
+        return _put(orgAction(orgData.id, 'ReferralAgency', referralAgency.id, 'Update'), referralAgency);
+    } // _updateReferralAgency
+    var _deleteReferralAgency = function (orgData, referralAgency, projData) {
+        if (projData)
+            return _delete(orgAction(orgData.id, 'ReferralAgency', projData.id, referralAgency.id));
+        return _delete(orgAction(orgData.id, 'ReferralAgency', referralAgency.id));
+    } // _deleteReferralAgency
 
     /////////////////////////////////////////////////
     var _listRiskMaps = function (orgData) {
@@ -246,19 +243,21 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
         return _get(riskMapsUri);
     } // _listRiskMaps
 
-    var _fetchRiskMap = function (name) {
-        return _get(riskMapAction(name));
+    var _fetchRiskMap = function (id) {
+        return _get(riskMapAction(id));
     } // _fetchRiskMap
 
     var _updateRiskMap = function (riskMap) {
-        return _put(riskMapAction(riskMap.name), riskMap);
+        return _put(riskMapAction(riskMap.id), riskMap);
     } // _fetchRiskMap
 
     var _createRiskMap = function (riskMap) {
         return _post(riskMapsUri, riskMap);
     } // _createRiskMap
 
-    var _listRisks = function () {
+    var _listRisks = function (orgData) {
+        if (orgData)
+            return _get(orgAction(orgData.id, 'Risks'));
         return _get(risksUri);
     } // _listRisks
 
@@ -274,11 +273,18 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
         return _post(risksUri, risk);
     } // _createRisk
 
+    var _deleteRisk = function (risk) {
+        return _delete(riskAction(risk.id));
+    } // _deleteRisk
+
     /////////////////////////////////////////////////
     var _loadReport = function (org, project, location, name, startDate, endDate, field) {
-        var url = reportAction(org.id, project.id, name);
-        if (location)
-            url = reportAction(org.id, project.id, location.id, name);
+        var url = reportAction(org.id, name);
+        if (project) {
+            url = reportAction(org.id, project.id, name);
+            if (location)
+                url = reportAction(org.id, project.id, location.id, name);
+        }
         var params = "";
         if (startDate) {
             params += (params.length == 0) ? "?" : "&";
@@ -320,6 +326,8 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
     dataServiceFactory.clientDelete = _clientDelete;
     dataServiceFactory.clientReopen = _clientReopen;
     dataServiceFactory.loadReferralReport = _clientReferralReport;
+    dataServiceFactory.emailReferralReport = _emailReferralReport;
+    dataServiceFactory.closeReferralReport = _closeReferralReport;
 
     dataServiceFactory.listOrganisations = _listOrganisations;
     dataServiceFactory.createOrganisation = _createOrganisation;
@@ -334,18 +342,15 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
     dataServiceFactory.updateProject = _updateProject;
     dataServiceFactory.canDeleteProject = _canDeleteProject;
     dataServiceFactory.deleteProject = _deleteProject;
-    dataServiceFactory.addProjectQuestion = _addProjectQuestion;
-    dataServiceFactory.updateProjectQuestion = _updateProjectQuestion;
     dataServiceFactory.listStaff = _listStaff;
     dataServiceFactory.addNewStaffMember = _addNewStaffMember;
     dataServiceFactory.updateStaffMember = _updateStaffMember;
     dataServiceFactory.updateStaffPassword = _updateStaffPassword;
     dataServiceFactory.deleteStaffMember = _deleteStaffMember;
-    dataServiceFactory.listLocations = _listLocations;
-    dataServiceFactory.addNewLocation = _addNewLocation;
-    dataServiceFactory.updateLocation = _updateLocation;
-    dataServiceFactory.canDeleteLocation = _canDeleteLocation;
-    dataServiceFactory.deleteLocation = _deleteLocation;
+    dataServiceFactory.listReferralAgencies = _listReferralAgencies;
+    dataServiceFactory.addNewReferralAgency = _addNewReferralAgency;
+    dataServiceFactory.updateReferralAgency = _updateReferralAgency;
+    dataServiceFactory.deleteReferralAgency = _deleteReferralAgency;
 
     dataServiceFactory.listRiskMaps = _listRiskMaps;
     dataServiceFactory.fetchRiskMap = _fetchRiskMap;
@@ -356,6 +361,7 @@ app.factory('dataService', ['$http', 'ngAuthSettings', function ($http, ngAuthSe
     dataServiceFactory.fetchRisk = _fetchRisk;
     dataServiceFactory.updateRisk = _updateRisk;
     dataServiceFactory.createRisk = _createRisk;
+    dataServiceFactory.deleteRisk = _deleteRisk;
 
     dataServiceFactory.loadReport = _loadReport;
     dataServiceFactory.loadReportFields = _loadReportFields;

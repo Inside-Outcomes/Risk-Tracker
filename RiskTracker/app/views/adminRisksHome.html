@@ -21,12 +21,15 @@
                     <li ng-switch-when="home">
                         &nbsp;<button class="btn btn-primary navbar-btn" ng-click="controller.newRiskMap()">New Risk Map</button>
                         <button class="btn btn-primary navbar-btn" ng-click="controller.newRisk()">New Risk</button>
+                        <button class="btn btn-primary navbar-btn" ng-click="controller.newOutcomeFramework()">New Outcome Framework</button>
                     </li>
                     <li ng-switch-when="risk">&nbsp;<button class="btn btn-warning navbar-btn" ng-click="controller.showRisks()"><i class="glyphicon glyphicon-eject"></i> Close</button></li>
                     <li ng-switch-when="editRisk">&nbsp;<button class="btn btn-danger navbar-btn" ng-click="controller.view = 'risk'"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button></li>
                     <li ng-switch-when="newRisk">&nbsp;<button class="btn btn-danger navbar-btn" ng-click="controller.view = 'home'"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button></li>
                     <li ng-switch-when="editRiskMap">&nbsp;<button class="btn btn-danger navbar-btn" ng-click="controller.view = 'riskMap'"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button></li>
                     <li ng-switch-when="newRiskMap">&nbsp;<button class="btn btn-danger navbar-btn" ng-click="controller.view = 'home'"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button></li>
+                    <li ng-switch-when="editOutcomeFramework">&nbsp;<button class="btn btn-danger navbar-btn" ng-click="controller.showOutcomeFrameworks()"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button></li>
+                    <li ng-switch-when="newOutcomeFramework">&nbsp;<button class="btn btn-danger navbar-btn" ng-click="controller.view = 'home'"><i class="glyphicon glyphicon-remove-sign"></i> Cancel</button></li>
                     <li ng-switch-default>&nbsp;<button class="btn btn-warning navbar-btn" ng-click="controller.refresh()"><i class="glyphicon glyphicon-eject"></i> Close</button></li>
                 </ul>
                 <ng-include src="'app/views/common/logout_button.html'"></ng-include>
@@ -48,6 +51,8 @@
                 <div ng-switch-when="risk"><ng-include src="'app/views/admin/risk.html'"></ng-include></div>
                 <div ng-switch-when="editRisk"><ng-include src="'app/views/admin/editrisk.html'"></ng-include></div>
                 <div ng-switch-when="newRisk"><ng-include src="'app/views/admin/newrisk.html'"></ng-include></div>
+                <div ng-switch-when="editOutcomeFramework"><ng-include src="'app/views/admin/editoutcomeframework.html'"></ng-include></div>
+                <div ng-switch-when="newOutcomeFramework"><ng-include src="'app/views/admin/newoutcomeframework.html'"></ng-include></div>
             </div>
         </div>
     </div>

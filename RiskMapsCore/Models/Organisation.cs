@@ -38,12 +38,14 @@ namespace RiskTracker.Models {
     protected readonly IList<ProjectData> projects_;
     protected readonly int staffCount_;
     protected readonly int locationCount_;
+    protected readonly int referralAgencyCount_;
 
     public ProjectOrganisation(ProjectOrganisationData projOrg) : 
         base(projOrg.Details) {
       projects_ = projOrg.Projects != null ? projOrg.Projects : new List<ProjectData>();
       staffCount_ = projOrg.Staff != null ? projOrg.Staff.Count() : 0;
       locationCount_ = projOrg.Locations != null ? projOrg.Locations.Count() : 0;
+      referralAgencyCount_ = projOrg.ReferralAgencies != null ? projOrg.ReferralAgencies.Count() : 0;
     } // ProjectOrganisation
 
     public int ProjectCount { get { return projects_.Count(); } }
@@ -53,5 +55,6 @@ namespace RiskTracker.Models {
 
     public int StaffCount { get { return staffCount_; } }
     public int LocationCount { get { return locationCount_; } }
+    public int ReferralAgencyCount { get { return referralAgencyCount_;  } }
   } // ProjectOrganisation
 } // namespace ...

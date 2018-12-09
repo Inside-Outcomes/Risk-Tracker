@@ -3,7 +3,8 @@ var orgController = (function () {
     var _setupOrgController =
         function (controller,
                   dataService,
-                  $modal) {
+                  $modal,
+                  $routeParams) {
             controller.roles = ['advisor', 'coordinator', 'supervisor'];
             controller.message = "";
             controller.view = 'home';
@@ -42,17 +43,17 @@ var orgController = (function () {
                     controller.message = error.status + ": " + error.statusText;
             } // errorHandler
 
-            controller.updateLocationData = function (results) {
-                controller.viewLocation = true;
-                controller.viewOrg();
-                controller.allLocations = results.data;
-            } // updateLocationData
-
             controller.updateStaff = function (results) {
                 controller.viewStaff = true;
                 controller.viewOrg();
                 controller.allStaff = results.data;
             } // updateStaff
+
+            controller.updateAgency = function (results) {
+                controller.viewReferralAgency = true;
+                controller.viewOrg();
+                controller.allReferralAgencies = results.data;
+            }
 
             controller.viewOrg = function () {
                 controller.message = "";
@@ -64,8 +65,9 @@ var orgController = (function () {
                 controller.organisation = org;
                 controller.allProjects = [];
                 controller.allStaff = [];
-                controller.allLocations = [];
                 controller.allRiskmaps = [];
+                controller.allReferralAgencies = [];
+                controller.allRisks = [];
                 dataService.listProjects(org).then(
                     function (results) {
                         controller.allProjects = results.data;
@@ -76,21 +78,34 @@ var orgController = (function () {
                         controller.allStaff = results.data;
                     }
                 );
-                dataService.listLocations(org).then(
-                    function (results) {
-                        controller.allLocations = results.data;
-                    }
-                );
                 dataService.listRiskMaps(org).then(
                     function (results) {
                         controller.allRiskmaps = results.data;
+                    }
+                );
+                dataService.listRisks(org).then(
+                    function (results) {
+                        controller.allRisks = results.data;
+                    }
+                );
+                dataService.listReferralAgencies(org).then(
+                    function (results) {
+                        controller.allReferralAgencies = results.data;
+                        if ($routeParams.subview == 'agency' && $routeParams.guid != null) {
+                            for (var a in controller.allReferralAgencies) 
+                                if (results.data[a].id == $routeParams.guid) {
+                                    controller.editReferralAgencyForm(results.data[a]);
+                                    return;
+                                }
+                        }
                     }
                 );
             } // loadOrg
 
             controller.loadAndViewOrg = function (org) {
                 controller.loadOrg(org);
-                controller.viewOrg();
+                if ($routeParams.subview == null) 
+                    controller.viewOrg();
             } // loadAndViewOrg
 
             controller.editOrg = function (org) {
@@ -137,13 +152,13 @@ var orgController = (function () {
                     controller.staff.projectIds.push(projId);
             } // toggleStaffProject
 
-            controller.toggleLocationProject = function (projId) {
-                var index = controller.location.projectIds.indexOf(projId);
+            controller.toggleAgencyRisk = function (riskId) {
+                var index = controller.agency.associatedRiskIds.indexOf(riskId);
                 if (index > -1)
-                    controller.location.projectIds.splice(index, 1);
+                    controller.agency.associatedRiskIds.splice(index, 1);
                 else
-                    controller.location.projectIds.push(projId);
-            } // toggleLocationProject
+                    controller.agency.associatedRiskIds.push(riskId);
+            } // toggleAgencyRisk
 
             var updateProjectData = function (results) {
                 controller.message = "";
@@ -171,6 +186,13 @@ var orgController = (function () {
                             });
             } // deleteProject
 
+            controller.openRenewalDatePicker = function ($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+
+                controller.reviewdateopen = !controller.reviewdateopen;
+            };
+
             function clone(obj) {
                 if (obj == null || typeof (obj) != 'object')
                     return obj;
@@ -195,7 +217,6 @@ var orgController = (function () {
             } // _objName
 
             controller.projectName = function (projId) { return _objName(projId, controller.allProjects); }
-            controller.locationName = function (locId) { return _objName(locId, controller.allLocations); };
         };
 
     var orgControl = {};

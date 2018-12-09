@@ -63,14 +63,38 @@ var clientController = (function () {
             controller.wizard = "riskmap";
         }
 
+        var _sendAndPrint = function () {
+            var doneFn = function() {
+                _dialogBox('completedReport.html',
+                           "Referral Report Completed",
+                           controller.currentClient,
+                           _createNewClient
+                           );
+            };
+            var errorFn = function () {
+                controller.currentClient.noemail = false;
+                _dialogBox('errorReport.html',
+                           "Referral Report Error",
+                           controller.currentClient,
+                           _sendAndPrint);
+            }
+            if (controller.currentClient.noemail) 
+                dataService.closeReferralReport(controller.currentClient.id).then(doneFn, errorFn);
+            else
+                dataService.emailReferralReport(controller.currentClient.id).then(doneFn, errorFn);
+        } // _sendAndPrint
+
         var _completeWizard = function () {
-          _dialogBox('completedReport.html',
-                     "Referral Report Completed",
-                     controller.currentClient,
-                     function () {
-                       controller.createNewClient();
-                     });
+            controller.currentClient.noemail = false;
+            _dialogBox('emailDisclaimer.html',
+                       "Referral Report Completion",
+                       controller.currentClient,
+                       _sendAndPrint);
         } // _completedWizard
+
+        var _printForm = function () {
+            window.print();
+        } // _printForm
 
         var _dialogBox = function (templateUrl,
                                    title,
@@ -94,33 +118,6 @@ var clientController = (function () {
                 controller.currentClient = results.data;
             }, _errorHandler);
         }
-
-        var _clientChangeLocationProject = function () {
-            var alternatives = {
-                locations: [],
-                projects: [],
-                locationId: controller.currentClient.locationId,
-                projectId: controller.currentClient.projectId
-            };
-            dataService.listProjects(controller.organisation).then(function (results) {
-                alternatives.projects = results.data;
-            });
-            dataService.listLocations(controller.organisation).then(function (results) {
-                alternatives.locations = results.data;
-            });
-
-            _dialogBox('changeLocationProject.html',
-                       "Change Location or Project",
-                       alternatives,
-                       function (alternatives) {
-                           var updateClient = clone(controller.currentClient);
-                           updateClient.locationId = alternatives.locationId;
-                           updateClient.projectId = alternatives.projectId;
-                           dataService.clientUpdate(controller.currentClient.id, updateClient).then(function (results) {
-                               controller.currentClient = results.data;
-                           }, _errorHandler);
-                       });
-        } // _clientChangeLocationProject
 
         var _clientAddRisk = function (riskId) {
             _clientRisk(dataService.clientAddRisk, riskId);
@@ -166,27 +163,34 @@ var clientController = (function () {
 
         var _createNewClient = function () {
             controller.currentClient = {
-                address: {}
+                address: {},
             };
+
+            if (controller.currentProject)
+                controller.selectProject(controller.currentProject);
+            else {
+                if (controller.allProjects && controller.allProjects.length == 1)
+                    controller.selectProject(controller.allProjects[0]);
+                else
+                    controller.view = 'chooseproject';
+            }
+
             controller.wizard = "client";
         } // _createNewClient
 
-        var _updateAvailableLocations = function (projId) {
-            controller.availableLocations = []
-
-            controller.allLocations.forEach(function (location) {
-                var add = false;
-                location.projectIds.forEach(function (locProjId) {
-                    if (locProjId == projId)
-                        add = true;
-                });
-                if (add)
-                    controller.availableLocations.push(location);
-            });
-
-            controller.newclient.locationId =
-                (controller.availableLocations.length == 1) ? controller.availableLocations[0].id : undefined;
-        } // _updateAvailableLocations
+        var _selectProject = function (project) {
+            controller.currentProject = project;
+            if (controller.currentClient)
+                controller.currentClient.projectId = controller.currentProject.id
+            if (controller.riskMap.name != project.riskFramework) {
+                controller.message = "Loading ...";
+                dataService.fetchRiskMap(project.riskFramework).then(function (results) {
+                    controller.message = "";
+                    controller.riskMap = results.data;
+                }, controller.errorHandler);
+            } // if ...
+            controller.view = "triage";
+        } // selectProject
 
         function clone(obj) {
             if (obj == null || typeof (obj) != 'object')
@@ -219,12 +223,14 @@ var clientController = (function () {
                 controller.message = error.status + ": " + error.statusText;
         } // errorHandler
 
+        controller.selectProject = _selectProject;
         controller.openClient = _openClient;
         controller.nextToRiskMap = _nextToRiskMap;
         controller.backToClient = _backToClient;
         controller.nextToReferrals = _nextToReferrals;
         controller.backToRiskMap = _backToRiskMap;
         controller.completeWizard = _completeWizard;
+        controller.printForm = _printForm;
 
         controller.clientAddRisk = _clientAddRisk;
         controller.clientManageRisk = _clientManageRisk;
@@ -239,10 +245,6 @@ var clientController = (function () {
         controller.errorHandler = _errorHandler;
 
         controller.createNewClient = _createNewClient;
-
-        controller.updateAvailableLocations = _updateAvailableLocations;
-
-        controller.clientChangeLocationProject = _clientChangeLocationProject;
       };
 
     var clientControl = {};

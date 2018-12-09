@@ -6,6 +6,10 @@ using System.Linq;
 
 namespace RiskTracker.Tests {
   public abstract class ClientBaseTests {
+    [ClassInitialize]
+    public static void DataSetup(TestContext tc) {
+      RiskTracker.DataConfig.InitialData();
+    } // DataSetup
 
     [TestCleanup]
     public void CleanUp() {
@@ -17,7 +21,7 @@ namespace RiskTracker.Tests {
     public void create_new_client() {
       var initialCount = clientCount();
 
-      var client = createClient();
+      var client = createClient(project());
 
       Assert.AreNotEqual(Guid.Empty, client.Id);
       Assert.AreEqual(initialCount + 1, clientCount());
@@ -25,7 +29,7 @@ namespace RiskTracker.Tests {
 
     [TestMethod]
     public void update_client() {
-      Guid clientId = createClient().Id;
+      Guid clientId = createClient(project()).Id;
 
       var update = new ClientUpdate() {
         Id = clientId,
@@ -38,29 +42,24 @@ namespace RiskTracker.Tests {
     } // FindAndUpdate
 
     [TestMethod]
-    public void set_risk_map_and_add_risk() {
-      var clientId = createClient().Id;
+    public void add_risk() {
+      var clientId = createClient(project()).Id;
       var client = getClient(clientId);
-      Assert.IsNull(client.CurrentRiskAssessment);
-      
-      var proj = project();
-      var risks = riskMap(proj.RiskFramework);
 
-      var update = new ClientUpdate() {
-        Id = clientId,
-        ProjectId = proj.Id
-      };
-      updateClient(update);
+      var risks = riskMap(riskMapId());
+      var riskCount = risks.Risks.Count;
+      Assert.AreEqual(0, client.CurrentRiskAssessment.AtRisk.Count);
+      Assert.AreEqual(riskCount, client.CurrentRiskAssessment.NotAtRisk.Count);
 
-      client = getClient(clientId);
-      Assert.IsNotNull(client.CurrentRiskAssessment);
-
-      client = addAssessedRisk(client, risks.Risks().First());
+      // add a risk
+      client = addAssessedRisk(client, risks.Risks.First());
       Assert.AreEqual(DateTime.Now.Date, client.CurrentRiskAssessment.Datestamp);
 
-      var riskCount = risks.Risks().Count;
+      riskCount = risks.Risks.Count;
       Assert.AreEqual(1, client.CurrentRiskAssessment.AtRisk.Count);
       Assert.AreEqual(riskCount - 1, client.CurrentRiskAssessment.NotAtRisk.Count);
+      Assert.AreEqual(0, client.CurrentRiskAssessment.ManagedRisk.Count);
+      Assert.AreEqual(0, client.CurrentRiskAssessment.ResolvedRisk.Count);
     } 
 
     [TestMethod]
@@ -70,10 +69,10 @@ namespace RiskTracker.Tests {
       var client = clientAndRisks.Item1;
       var risks = clientAndRisks.Item2;
 
-      addAssessedRisk(client, risks.Risks().First());
-      client = removeAssessedRisk(client, risks.Risks().First());
+      addAssessedRisk(client, risks.Risks.First());
+      client = removeAssessedRisk(client, risks.Risks.First());
 
-      var riskCount = risks.Risks().Count;
+      var riskCount = risks.Risks.Count;
       Assert.AreEqual(0, client.CurrentRiskAssessment.AtRisk.Count);
       Assert.AreEqual(0, client.CurrentRiskAssessment.ResolvedRisk.Count);
       Assert.AreEqual(riskCount, client.CurrentRiskAssessment.NotAtRisk.Count);
@@ -86,12 +85,12 @@ namespace RiskTracker.Tests {
       var client = clientAndRisks.Item1;
       var risks = clientAndRisks.Item2;
 
-      var groupName = risks.Risks().Where(r => !String.IsNullOrEmpty(r.Grouping)).Select(r => r.Grouping).First();
-      var groupRisks = risks.Risks().Where(r => r.Grouping == groupName).ToList();
+      var groupName = risks.Risks.Where(r => !String.IsNullOrEmpty(r.Grouping)).Select(r => r.Grouping).First();
+      var groupRisks = risks.Risks.Where(r => r.Grouping == groupName).ToList();
 
       client = addAssessedRisk(client, groupRisks.First());
 
-      var riskCount = risks.Risks().Count;
+      var riskCount = risks.Risks.Count;
       Assert.AreEqual(1, client.CurrentRiskAssessment.AtRisk.Count);
       Assert.AreEqual(groupRisks.First().Id, client.CurrentRiskAssessment.AtRisk[0]);
       Assert.AreEqual(riskCount-1, client.CurrentRiskAssessment.NotAtRisk.Count);
@@ -111,10 +110,10 @@ namespace RiskTracker.Tests {
       var client = clientAndRisks.Item1;
       var risks = clientAndRisks.Item2;
 
-      addAssessedRisk(client, risks.Risks().First());
-      client = resolveAssessedRisk(client, risks.Risks().First());
+      addAssessedRisk(client, risks.Risks.First());
+      client = resolveAssessedRisk(client, risks.Risks.First());
 
-      var riskCount = risks.Risks().Count;
+      var riskCount = risks.Risks.Count;
       Assert.AreEqual(0, client.CurrentRiskAssessment.AtRisk.Count);
       Assert.AreEqual(1, client.CurrentRiskAssessment.ResolvedRisk.Count);
       Assert.AreEqual(riskCount-1, client.CurrentRiskAssessment.NotAtRisk.Count);
@@ -127,24 +126,22 @@ namespace RiskTracker.Tests {
       var client = clientAndRisks.Item1;
       var risks = clientAndRisks.Item2;
 
-      addAssessedRisk(client, risks.Risks().First());
-      resolveAssessedRisk(client, risks.Risks().First());
-      client = reopenResolvedRisk(client, risks.Risks().First());
+      addAssessedRisk(client, risks.Risks.First());
+      resolveAssessedRisk(client, risks.Risks.First());
+      client = reopenResolvedRisk(client, risks.Risks.First());
 
-      var riskCount = risks.Risks().Count;
+      var riskCount = risks.Risks.Count;
       Assert.AreEqual(1, client.CurrentRiskAssessment.AtRisk.Count);
       Assert.AreEqual(0, client.CurrentRiskAssessment.ResolvedRisk.Count);
       Assert.AreEqual(riskCount - 1, client.CurrentRiskAssessment.NotAtRisk.Count);
     }
 
     private Tuple<Client, RiskMap> createClientWithRiskMap() {
-      var clientId = createClient().Id;
-      var proj = project();
-      var risks = riskMap(proj.RiskFramework);
+      var clientId = createClient(project()).Id;
+      var risks = riskMap(riskMapId());
 
       var update = new ClientUpdate() {
         Id = clientId,
-        ProjectId = proj.Id
       };
       updateClient(update);
 
@@ -153,7 +150,7 @@ namespace RiskTracker.Tests {
 
     /////////////////////////////
     protected abstract int clientCount();
-    protected abstract Client createClient();
+    protected abstract Client createClient(Project project);
     protected abstract Client getClient(Guid id);
     protected abstract Client updateClient(ClientUpdate client);
 
@@ -162,18 +159,20 @@ namespace RiskTracker.Tests {
     protected Project project() {
       using (var repo = new ProjectOrganisationRepository()) {
         var org = repo.Create(TestHelper.testOrg());
+        org.RiskMaps.Add(riskMapId());
+        repo.Update(org);
         var proj = TestHelper.newProject("CHUNKS");
-        proj.RiskFramework = riskMapName();
+        proj.RiskFramework = riskMapId();
         return repo.AddProject(org.Id, proj).Where(s => s.Name == proj.Name).Single();
       }
     } // project
-    protected string riskMapName() {
-      using (var riskMapRepo = new RiskMapRepository())
-        return riskMapRepo.RiskMaps().First().Name;
+    protected Guid riskMapId() {
+      using (var riskMapRepo = new RiskMapRepository(null))
+        return riskMapRepo.RiskMaps().First().Id;
     }
-    protected RiskMap riskMap(string name) {
-      using (var riskMapRepo = new RiskMapRepository())
-        return riskMapRepo.RiskMap(name);
+    protected RiskMap riskMap(Guid id) {
+      using (var riskMapRepo = new RiskMapRepository(null))
+        return riskMapRepo.RiskMap(id);
     } // RiskMap
     protected abstract Client addAssessedRisk(Client client, Risk risk);
     protected abstract Client removeAssessedRisk(Client client, Risk risk);

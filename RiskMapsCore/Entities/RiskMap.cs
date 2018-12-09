@@ -5,52 +5,41 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace RiskTracker.Entities {
-  public class RiskMap {
+  public class RiskMapData {
     [Key]
     public Guid Id { get; set; }
     [Required]
     public string Name { get; set; }
     public string RiskIds { get; set; }
+    public Guid? OwningOrganisation { get; set; }
     private IList<Risk> risks_;
 
-    public RiskMap() { }
+    public RiskMapData() { }
 
-    public static RiskMap create(
+    public static RiskMapData create(
         string name,
-        IList<Risk> risks) {
+        IList<Risk> risks,
+        Guid? ownerOrg) {
       string riskIds = String.Join("|", risks.Select(r => r.Id.ToString()));
-      var riskMap = new RiskMap();
+      var riskMap = new RiskMapData();
       riskMap.Id = Guid.NewGuid();
       riskMap.Name = name;
+      riskMap.OwningOrganisation = ownerOrg;
       riskMap.RiskIds = riskIds;
       return riskMap;
     } // create
 
     public void populate(IList<Risk> risks) {
+      if (RiskIds.Length == 0) {
+        risks_ = new List<Risk>();
+        return;
+      } // if ...
+
       IList<Guid> guids = RiskIds.Split('|').Select(g => Guid.Parse(g)).ToList();
       risks_ = risks.Where(r => guids.Contains(r.Id)).ToList();
     }
+
     public IList<Risk> Risks() { return risks_; }
-
-    public IList<string> AllThemes() {
-      var themes = new List<string> { "personal circumstances", "behaviour", "status" };
-      foreach (var risk in Risks()) {
-        var index = themes.IndexOf(risk.Theme.ToLower());
-        if (index == -1)
-          index = themes.IndexOf(risk.Theme);
-
-        if (index != -1)
-          themes[index] = risk.Theme; // capitalise appropriate
-        else
-          themes.Add(risk.Theme.ToLower());     // whoa! new theme
-      } // for ...
-      return themes;
-    } // AllThemes
-
-    public IList<string> AllCategories() {
-      var categories = new HashSet<string>(Risks().Select(r => r.Category));
-      return categories.OrderBy(c => c).ToList();
-    } // AllCategories
   } // class RiskMap
 
   public class Risk {
@@ -77,6 +66,9 @@ namespace RiskTracker.Entities {
     public string HCP { get; set; }
     public string SJOF { get; set; }
     public string ASCOF { get; set; }
+    public Guid? OwningOrganisation { get; set; }
+    [Required]
+    public bool Deleted { get; set; }
 
     public void CopyFrom(Risk other) {
       Title = other.Title;
@@ -90,6 +82,23 @@ namespace RiskTracker.Entities {
       HCP = other.HCP;
       SJOF = other.SJOF;
       ASCOF = other.ASCOF;
+      OwningOrganisation = other.OwningOrganisation;
     } // CopyFrom
   } // class Risk
+
+  public class OutcomeFramework {
+    [Key]
+    public Guid Id { get; set; }
+    [Required]
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public Guid? OwningOrganisation { get; set; }
+
+    public void CopyFrom(OutcomeFramework other) {
+      Title = other.Title;
+      Description = other.Description;
+      OwningOrganisation = other.OwningOrganisation;
+    } // CopyFrom
+  } // class OutcomeFramework
+
 } // namespace ...

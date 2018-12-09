@@ -12,13 +12,71 @@ namespace RiskTracker.Entities {
       return listClients(clients.Include(c => c.Notes));
     }
 
+    class OrganisationClients : IEnumerable<ClientName>, IEnumerator<ClientName> {
+      public OrganisationClients(Guid orgId, DbSet<ClientData> clients) {
+        ProjectOrganisationData pod = ProjectOrganisationRepository.findOrg(orgId);
+        locations_ = pod.Locations.Select(loc => loc.Id).ToArray();
+        index_ = 0;
+        
+        clients_ = clients;
+
+        enumerator_ = nextEnumerator();
+      } // OrganisationClients
+
+      private IEnumerator<ClientData> nextEnumerator() {
+        Guid currentLocation = locations_[index_];
+        return clients_.
+          Where(c => c.LocationId == currentLocation).
+          Include(c => c.Notes).
+          Include(c => c.Demographics).
+          GetEnumerator();
+      }
+
+      public IEnumerator<ClientName> GetEnumerator() { return this; }
+      System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return this; }
+
+      private int index_;
+      private Guid[] locations_;
+      private DbSet<ClientData> clients_;
+      private IEnumerator<ClientData> enumerator_;
+
+      public ClientName Current {
+        get { return current(); }
+      }
+      object System.Collections.IEnumerator.Current {
+        get { return current(); }
+      }
+
+      private ClientName current() {
+        return new ClientName(enumerator_.Current);
+      }
+
+      public bool MoveNext() {
+        if (enumerator_.MoveNext())
+          return true;
+
+        enumerator_.Dispose();
+        enumerator_ = null;
+        
+        ++index_;
+        if (index_ == locations_.Length)
+          return false;
+
+        enumerator_ = nextEnumerator();
+        return MoveNext();
+      }
+            
+      public void Dispose() {
+        if (enumerator_ != null)
+          enumerator_.Dispose();
+      }
+      public void Reset() {
+        throw new NotImplementedException();
+      }
+    } // OrganisationClients
+
     public IEnumerable<ClientName> Clients(Guid orgId) {
-      ProjectOrganisationData pod = ProjectOrganisationRepository.findOrg(orgId);
-      List<Guid> locations = pod.Locations.Select(loc => loc.Id).ToList();
-      return listClients(
-        clients.Where(c => locations.Contains(c.LocationId)).
-                Include(c => c.Notes).
-                Include(c => c.Demographics));
+      return new OrganisationClients(orgId, clients);
     } // Clients
 
     public IEnumerable<ClientName> SearchByRefId(String refId) {
@@ -85,19 +143,32 @@ namespace RiskTracker.Entities {
 
     public Client Client(Guid clientId) {
       var cd = clientData(clientId);
-      return new Client(cd, riskMap(cd), projectQuestions(cd));
+      return new Client(cd, riskMap(cd), projectQuestions(cd), referralAgencies(cd));
     } // Client
 
+    private ProjectOrganisationData projectOrganisation(ClientData clientData) {
+      var projectOrg = context.ProjectOrganisations.Where(po => po.Projects.Select(p => p.Id).ToList().Contains(clientData.ProjectId)).Include(po => po.Details).Single();
+      return projectOrg;
+    } // projectOrg
+
     private RiskMap riskMap(ClientData clientData) {
-      var riskFramework = context.Projects.Where(p => p.Id == clientData.ProjectId).Select(p => p.RiskFramework).SingleOrDefault();
-      var riskMapRepo = new RiskMapRepository();
-      return riskMapRepo.RiskMap(riskFramework);
+      var projectOrg = projectOrganisation(clientData);
+      var project = context.Projects.Where(p => p.Id == clientData.ProjectId).Single();
+      var riskMapRepo = new RiskMapRepository(projectOrg.Details.Id);
+      return riskMapRepo.RiskMap(project.RiskFramework);
     } // riskMap
 
     private IList<ProjectQuestionData> projectQuestions(ClientData clientData) {
       var project = context.Projects.Where(p => p.Id == clientData.ProjectId).Include(p => p.Questions).Single();
       return project.Questions;
     } // projectQuestions
+
+    private IList<ReferralAgency> referralAgencies(ClientData clientData) {
+      var poRepo = new ProjectOrganisationRepository();
+      var projectOrg = projectOrganisation(clientData);
+      var agencies = poRepo.FetchReferralAgencies(projectOrg.Details.Id);
+      return agencies;
+    } // referralAgencies
 
     public Client AddNewClient(ClientUpdate newClient) {
       if (!Guid.Empty.Equals(newClient.Id))

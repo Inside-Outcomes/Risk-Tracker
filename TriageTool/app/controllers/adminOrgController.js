@@ -9,7 +9,7 @@ function ($routeParams, $modal, authService, dataService, localStorageService, U
 
     clientController.setup(controller, dataService, $modal, localStorageService, Upload, $scope);
 
-    orgController.setup(controller, dataService, $modal);
+    orgController.setup(controller, dataService, $modal, $routeParams);
 
     reportsController.setup(controller, dataService);
 

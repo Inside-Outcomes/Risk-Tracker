@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -111,12 +114,15 @@
   <ItemGroup>
     <Compile Include="ClientBaseTests.cs" />
     <Compile Include="Controllers\OrganisationControllerTests.cs" />
+    <Compile Include="Controllers\OutcomeFrameworkControllerTests.cs" />
     <Compile Include="POBaseTests.cs" />
     <Compile Include="Repos\ProjectOrganisationTests.cs" />
+    <Compile Include="Repos\OutcomeFrameworkRepoTests.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="Repos\ClientsRepoTest.cs" />
     <Compile Include="Controllers\ClientsControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="OutcomeFrameworkBaseTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />

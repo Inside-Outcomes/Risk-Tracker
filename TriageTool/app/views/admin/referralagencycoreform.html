@@ -1,0 +1,29 @@
+﻿<input type="text" class="form-control" placeholder="Name" ng-model="controller.agency.name" required autofocus>
+<textarea placeholder="Description" ng-model="controller.agency.description" rows="3" cols="*" class="form-control"></textarea>
+
+<p class="input-group"> 
+    <input type="text" class="form-control"
+           placeholder="Review Date"
+           datepicker-popup="dd MMM yyyy"
+           ng-model="controller.agency.reviewDate"
+           is-open="controller.reviewdateopen"
+           close-text="Close" />
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-default" data-ng-click="controller.openRenewalDatePicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+    </span>
+</p>
+<br/>
+
+<tabset>
+    <tab heading="Address">
+        <address-form address="controller.agency.address" notitle="true"></address-form>
+    </tab>
+    <tab heading="Associated Risks">
+        <div data-ng-repeat="risk in controller.allRisks">
+            <input type="checkbox"
+                   value="{{risk.id}}"
+                   ng-click="controller.toggleAgencyRisk(risk.id)"
+                   ng-checked="controller.agency.associatedRiskIds.indexOf(risk.id) != -1">  {{risk.title}}
+        </div>
+    </tab>
+</tabset>

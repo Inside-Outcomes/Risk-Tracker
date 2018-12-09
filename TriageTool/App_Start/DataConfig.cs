@@ -5,10 +5,15 @@ using RiskTracker.Entities;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Data.Entity;
+using System.Configuration;
 
 namespace RiskTracker {
   public static class DataConfig {
     public static void InitialData() {
+      var bootstrap = ConfigurationManager.AppSettings["Bootstrap"];
+      if (bootstrap == null || !bool.Parse(bootstrap))
+        return;
+
       initialClientAppsList();
       setupAdmins();
 

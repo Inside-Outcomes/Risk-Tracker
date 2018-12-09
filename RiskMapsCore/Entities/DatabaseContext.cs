@@ -29,8 +29,9 @@ namespace RiskTracker.Entities {
     public DbSet<StaffMemberData> StaffMembers { get; set; }
     public DbSet<LocationData> Locations { get; set; }
 
-    public DbSet<RiskMap> RiskMaps { get; set; }
+    public DbSet<RiskMapData> RiskMaps { get; set; }
     public DbSet<Risk> Risks { get; set; }
+    public DbSet<OutcomeFramework> OutcomeFrameworks { get; set; }
 
     protected override void OnModelCreating(DbModelBuilder modelBuilder) {
       base.OnModelCreating(modelBuilder);

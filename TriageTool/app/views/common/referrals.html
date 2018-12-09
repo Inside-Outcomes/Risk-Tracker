@@ -1,7 +1,8 @@
 ﻿<div class="row">
     <div class="col-md-6">
         <h3>{{controller.currentClient.name}}</h3>
-        <address-display address="controller.currentClient.address" brief="true"></address-display>
+        <p><strong>Phone number</strong> : {{ controller.currentClient.address.phoneNumber }}</p>
+        <p><strong>Email</strong> : {{ controller.currentClient.address.email }}</p>
     </div>
 
     <div class="col-md-6">
@@ -11,7 +12,7 @@
 </div>
 
 <p></p>
-<h3>Assigned Risks</h3>
+<h3>Issues you have requested help with</h3>
 <div ng-repeat="theme in controller.riskAssessment">
     <div ng-repeat="category in theme.categories">
         <div ng-repeat="risk in category.risks" ng-if="risk.status == 'atRisk'">
@@ -22,10 +23,11 @@
 
                 <div class="col-md-6">
                     <div ng-repeat="agency in controller.referrals.referrals[risk.id]">
-                        <p><strong>{{agency.name}}</strong> <br /> {{agency.description}}
-                        <span ng-if="agency.phoneNumber"><br /><strong>Phone number</strong> : {{ agency.phoneNumber }}</span>
-                        <span ng-if="agency.email"><br /><strong>Email</strong> : <a href="mailto:{{ agency.email }}">{{ agency.email }}</a></span>
-                        <span ng-if="agency.website"><br /><strong>Website</strong> : <a href="{{ agency.website }}">{{ agency.website }}</a></span>
+                        <p><strong>{{agency.name}}</strong> 
+                        <span ng-if="agency.description"><br /> {{agency.description}}</span>
+                        <span ng-if="agency.address.phoneNumber"><br /><strong>Phone number</strong> : {{ agency.address.phoneNumber }}</span>
+                        <span ng-if="agency.address.email"><br /><strong>Email</strong> : <a href="mailto:{{ agency.address.email }}">{{ agency.address.email }}</a></span>
+                        <span ng-if="agency.address.website"><br /><strong>Website</strong> : <a href="{{ agency.address.website }}">{{ agency.address.website }}</a></span>
                         </p>
                     </div>
                 </div>
@@ -38,10 +40,10 @@
     </div>
 </div>
 
-<h3>Managed Risks</h3>
+<h3>Issues you are currently managing</h3>
 <div ng-repeat="theme in controller.riskAssessment">
     <div ng-repeat="category in theme.categories">
-        <div class="row" ng-repeat="risk in category.risks" ng-if="risk.status == 'resolvedRisk'">
+        <div class="row" ng-repeat="risk in category.risks" ng-if="risk.status == 'managedRisk'">
             <div class="col-md-6">
                 <strong>{{ risk.title }}</strong>
             </div>
@@ -49,10 +51,4 @@
     </div>
 </div>
 
-<h3>Risk Scores</h3>
-<div ng-repeat="theme in controller.riskAssessment">
-   <div class="row">
-       <div class="col-md-4"><strong>{{ theme.title }}</strong></div>
-       <div class="col-md-2"><strong>{{ theme.score }}</strong></div>
-   </div>
-</div>
+

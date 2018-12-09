@@ -35,16 +35,22 @@ namespace RiskTracker.Models {
     private List<NoteData> files_;
     private String generalNote_;
     private List<QuestionAnswer> questions_;
+    private List<Referral> referrals_;
 
-    public Client(ClientData client, RiskMap riskMap) : this(client, riskMap, null) { }
+    public Client(ClientData client, RiskMap riskMap) : this(client, riskMap, null, null) { }
 
-    public Client(ClientData client, RiskMap riskMap, IList<ProjectQuestionData> projectQuestions) :
+    public Client(
+      ClientData client, 
+      RiskMap riskMap, 
+      IList<ProjectQuestionData> projectQuestions,
+      IList<ReferralAgency> referralAgencies) :
         base(client) {
 
-      if (riskMap != null) {
-        client.RiskAssessments.Sort(RiskSort);
-        riskAssessment_ = new RiskAssessment(client.RiskAssessments, riskMap);
-      } // if ...
+      client.RiskAssessments.Sort(RiskSort);
+      riskAssessment_ = new RiskAssessment(client.RiskAssessments, riskMap);
+
+      questions_ = prepareQuestionAnswers(client, projectQuestions);
+      referrals_ = prepareReferrals(client, referralAgencies);
 
       if (client_.Notes == null)
         return;
@@ -60,16 +66,47 @@ namespace RiskTracker.Models {
         Where(n => n.Type == NoteType.File).
         OrderByDescending(n => n.Timestamp).
         ToList();
+    } // Client
 
-      questions_ = new List<QuestionAnswer>();
+    private List<QuestionAnswer> prepareQuestionAnswers(ClientData client, IList<ProjectQuestionData> projectQuestions) {
+      var questions = new List<QuestionAnswer>();
       if (projectQuestions == null || projectQuestions.Count == 0) 
-        return;
+        return questions;
 
       foreach (var q in projectQuestions) {
-        var answer = client.ProjectAnswers.Where(a => a.QuestionId == q.Id).SingleOrDefault();
-        questions_.Add(new QuestionAnswer(q, answer));
+        var answer = client.ProjectAnswers.Where(a => a.QuestionId == q.Id).FirstOrDefault();
+        questions.Add(new QuestionAnswer(q, answer));
       }
-    } // Client
+      return questions;
+    } // prepareQuestionAnswers
+
+    private List<Referral> prepareReferrals(ClientData client, IList<ReferralAgency> referralAgencies) {
+      var referrals = new List<Referral>();
+
+      if (riskAssessment_ == null || referralAgencies == null || referralAgencies.Count == 0)
+        return referrals;
+
+      var atRisk = riskAssessment_.AtRisk;
+      foreach(var theme in riskAssessment_.ThemeAssessments)
+        foreach(var category in theme.Categories)
+          foreach (var risk in category.Risks) {
+            if (!atRisk.Contains(risk.Id))
+              continue;
+
+            var agencies = new List<ReferralAgency>();
+            foreach (var agency in referralAgencies)
+              if (agency.AssociatedRiskIds.Contains(risk.Id))
+                agencies.Add(agency);
+
+            if (agencies.Count == 0)
+              continue;
+
+            referrals.Add(new Referral(risk, agencies));
+          }
+
+
+      return referrals;
+    } // prepareReferrals
 
     public AddressData Address { get { return client_.Address;  } }
     public DemographicData Demographics { get { return client_.Demographics; } }
@@ -78,6 +115,7 @@ namespace RiskTracker.Models {
     public RiskAssessment CurrentRiskAssessment { get { return riskAssessment_; } }
     public List<NoteData> Files { get { return files_;  } }
     public List<QuestionAnswer> Questions { get { return questions_; } }
+    public List<Referral> Referrals { get { return referrals_; } }
 
     private static int RiskSort(RiskAssessmentData left, RiskAssessmentData right) {
       return right.Timestamp.CompareTo(left.Timestamp);
@@ -86,7 +124,7 @@ namespace RiskTracker.Models {
     private static List<TimelineEntry> buildTimeLine(List<NoteData> notes,
                                                      List<RiskAssessmentData> riskAssessments,
                                                      RiskMap riskMap) {
-                                                       Dictionary<DateTime, TimelineEntry> timeLineEntries = new Dictionary<DateTime, TimelineEntry>();
+                                                     Dictionary<DateTime, TimelineEntry> timeLineEntries = new Dictionary<DateTime, TimelineEntry>();
 
       foreach (var nd in notes.OrderByDescending(n => n.Timestamp)) {
         DateTime date = nd.Timestamp.Date;
@@ -163,6 +201,18 @@ namespace RiskTracker.Models {
     public string[] Options { get { return options_; } }
   }
 
+  public class Referral {
+    private RiskAssessment.CategoryRisk risk_;
+    private List<ReferralAgency> agencies_;
+
+    public Referral(RiskAssessment.CategoryRisk risk, List<ReferralAgency> agencies) {
+      risk_ = risk;
+      agencies_ = agencies;
+    } // Referral
+
+    public RiskAssessment.CategoryRisk Risk { get { return risk_; } }
+    public List<ReferralAgency> Agencies { get { return agencies_; } }
+  }
   public class TimelineEntry {
     private DateTime date_;
     private List<TimelineNote> notes_;
@@ -189,11 +239,6 @@ namespace RiskTracker.Models {
                        ToList();
     } // addRiskAssessment
     public void defaultRiskScores(RiskMap riskMap) {
-      if (riskMap == null) {
-        riskScores_ = new List<RiskScore>();
-        return;
-      } // if ...
-
       riskScores_ = riskMap.AllThemes().
                        Select(t => new RiskScore { Title = t, Score = "0" }).
                        ToList();
@@ -259,13 +304,13 @@ namespace RiskTracker.Models {
     } // RiskAssessment
 
     public RiskAssessment(RiskAssessmentData rad, RiskMap riskMap) {
-      name_ = riskMap.Name;
       dateStamp_ = rad.Timestamp.Date;
+      name_ = riskMap.Name;
 
       var resolved = rad.ResolvedRisks();
       var managed = rad.ManagedRisks();
       var risks = rad.Risks();
-      foreach (Guid id in riskMap.Risks().Select(r => r.Id)) {
+      foreach (Guid id in riskMap.Risks.Select(r => r.Id)) {
         if (resolved.Contains(id))
           resolved_.Add(id);
         else if (managed.Contains(id))
@@ -304,7 +349,7 @@ namespace RiskTracker.Models {
     private IList<CategoryAssessment> buildThemeCategories(string themeName, RiskMap riskMap) {
       var themeCategories = new List<CategoryAssessment>();
       foreach (var category in riskMap.AllCategories()) {
-        var catRisks = riskMap.Risks().
+        var catRisks = riskMap.Risks.
           Where(r => r.Theme == themeName).
           Where(r => r.Category == category);
 
@@ -438,6 +483,8 @@ namespace RiskTracker.Models {
       } // calculateScore
 
       private bool isLetterCategory() {
+        if (cats_.Count == 0)
+          return false;
         var risk = cats_[0].Risks[0];
         int score;
         return !(int.TryParse(risk.Score, out score));

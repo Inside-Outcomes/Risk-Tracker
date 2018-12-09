@@ -2,12 +2,13 @@
 <h3>{{ controller.currentRiskMap.name }}</h3>
 
 {{ controller.currentRisks.length }} risks
-<table class="table table-striped table-bordered table-hover ng-hide" ng-show="controller.currentRisks.length != 0">
+<table datatable="ng" id="riskmaprisklist" dt-options="controller.rtOptions"
+       class="ng-hide" ng-show="controller.currentRiskMap.risks.length != 0">
     <thead>
         <tr><th>Theme</th><th>Risk</th><th>Category</th><th>Grouping</th></tr>
     </thead>
     <tbody>
-        <tr ng-repeat="risk in controller.currentRisks">
+        <tr ng-repeat="risk in controller.currentRiskMap.risks">
             <td>{{ risk.theme }}</td>
             <td>{{ risk.title }}</td>
             <td>{{ risk.category }}</td>

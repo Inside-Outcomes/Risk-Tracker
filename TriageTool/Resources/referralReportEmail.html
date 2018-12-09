@@ -1,0 +1,62 @@
+﻿<div style="width: 100%">
+    <div style="width: 50%">
+        <h3>@Model.Client.Name</h3>
+        <strong>@Model.Client.Address.PhoneNumber</strong><br/>
+        <strong>@Model.Client.Address.Email</strong>
+    </div>
+
+    <div style="width: 50%">
+        <h3>Assessment by @Model.Report.By</h3>
+        <strong>Date: @Model.Report.Date</strong>
+    </div>
+</div>
+
+<p></p>
+<p></p>
+<h3>Issues you have requested help with</h3>
+@foreach (var theme in Model.Client.CurrentRiskAssessment.ThemeAssessments) {
+    foreach (var category in theme.Categories) {
+        foreach (var risk in category.Risks) {
+            if (risk.Status == "atRisk") {
+                <div style="width: 100%">
+                    <div style="width: 50%">
+                        <strong>@risk.Title</strong>
+                    </div>
+
+                    <div style="width: 50%">
+                        @foreach (var agency in Model.Report.ReferralsFor(risk.Id)) {
+                           <p>
+                                <strong>@agency.Name</strong>
+                                @if (agency.Description != null && agency.Description.Length != 0) { <br /> @agency.Description }
+                                @if (agency.Address.PhoneNumber != null && agency.Address.PhoneNumber.Length != 0) { <br /><strong>Phone number</strong>  @agency.Address.PhoneNumber }
+                                @if (agency.Address.Email != null && agency.Address.Email.Length != 0) { <br /><strong>Email</strong> <a href="mailto:@agency.Address.Email">@agency.Address.Email</a> }
+                                @if (agency.Address.Website != null && agency.Address.Website.Length != 0) { <br /><strong>Website</strong> <a href="@agency.Address.Website">@agency.Address.Website</a> }
+                            </p>
+                        }
+                    </div>
+                </div>
+                <div style="width: 100%">
+                    <div style="width: 33%">&nbsp;</div>
+                    <div style="width: 33%"><hr /></div>
+                </div>
+            }
+        }
+    }
+}
+
+<h3>Issues you are currently managing</h3>
+@foreach (var theme in Model.Client.CurrentRiskAssessment.ThemeAssessments) {
+    foreach (var category in theme.Categories) {
+        foreach (var risk in category.Risks) {
+            if (risk.Status == "managedRisk") {
+                <div style="width: 100%">
+                    <div style="width: 50%">
+                        <strong>@risk.Title</strong>
+                    </div>
+                </div>
+            }
+        }
+    }
+}
+
+

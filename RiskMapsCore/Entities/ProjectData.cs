@@ -12,7 +12,7 @@ namespace RiskTracker.Entities {
     public string Name { get; set; }
     public AddressData Address { get; set; }
     [Required]
-    public string RiskFramework { get; set; }
+    public Guid RiskFramework { get; set; }
     public IList<CommissioningOrganisation> CommissioningOrganisations { get; set; }
     public IList<ProjectQuestionData> Questions { get; set; }
 

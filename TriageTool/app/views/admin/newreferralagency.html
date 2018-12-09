@@ -1,0 +1,10 @@
+﻿<h2 class="form-login-heading">New Referral Agency for {{controller.organisation.name}}</h2>
+
+<ng-include src="'app/views/admin/referralagencycoreform.html'"></ng-include>
+
+<button class="btn btn-info pull-right"
+        type="submit"
+        data-ng-disabled="!(controller.agency.name)"
+        data-ng-click="controller.addNewReferralAgency(controller.organisation, controller.agency)">
+    Create
+</button>
