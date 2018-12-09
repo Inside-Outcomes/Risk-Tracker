@@ -22,7 +22,10 @@ namespace RiskTracker {
 
     private static void setupAdmins() {
       using (AuthRepository auth = new AuthRepository()) {
-        //auth.AddIfNotPresentAdminUser(sample-username, password);
+        auth.AddIfNotPresentAdminUser(
+	  ConfigurationManager.AppSettings["AdminUser"],
+	  ConfigurationManager.AppSettings["AdminPassword"]
+	);
       } // using ...
     } // setupAdmins
 
@@ -39,7 +42,7 @@ namespace RiskTracker {
 
       clients.Add(new ClientApp {
         Id = "ngAuthApp",
-        Secret = Helper.GetHash("proodige"),
+        Secret = Helper.GetHash(ConfigurationManager.AppSettings["Secret"]),
         Name = "AngularJS Application",
         ApplicationType = Models.ApplicationTypes.JavaScript,
         Active = true,
